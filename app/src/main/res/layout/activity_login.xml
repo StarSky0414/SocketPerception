@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login"
+    android:orientation="vertical"
+    android:padding="40px">
+
+    <EditText
+        android:padding="10dp"
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150px"
+        android:layout_marginTop="900px"
+        android:layout_marginRight="150px"
+        android:background="@drawable/select_edittext"
+        android:hint="账户"
+        android:lines="1"
+        android:textColor="#ffffff"
+        android:textSize="18dp" />
+
+    <EditText
+        android:lines="1"
+        android:padding="10dp"
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150px"
+        android:layout_marginTop="100px"
+        android:layout_marginRight="150px"
+        android:background="@drawable/select_edittext"
+        android:hint="密码"
+        android:textColor="#ffffff"
+        android:textColorHint="#9f9f9f"
+        android:textSize="18dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100px">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="150px"
+            android:text="忘记密码"
+            android:textColor="#FFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="360px"
+            android:text="注册账户"
+            android:onClick="toRegister"
+            android:textColor="#FFF" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_submit"
+        android:layout_width="match_parent"
+        android:layout_height="120px"
+        android:layout_marginLeft="200px"
+        android:layout_marginTop="100px"
+        android:layout_marginRight="200px"
+
+        android:background="@drawable/select_edittext"
+        android:onClick="login"
+        android:text="登入"
+        android:textColor="#ffffff"
+        android:textSize="20dp" />
+</LinearLayout>
