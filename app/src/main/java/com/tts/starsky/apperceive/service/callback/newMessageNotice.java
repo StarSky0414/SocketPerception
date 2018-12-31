@@ -1,5 +1,8 @@
 package com.tts.starsky.apperceive.service.callback;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.alibaba.fastjson.JSON;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.ChatListBean;
@@ -11,8 +14,10 @@ import com.tts.starsky.apperceive.db.bao.UserSelfBeanDao;
 import com.tts.starsky.apperceive.db.bean.MessageBean;
 import com.tts.starsky.apperceive.db.bean.UserBean;
 import com.tts.starsky.apperceive.db.bean.UserSelfBean;
+import com.tts.starsky.apperceive.db.bean.UserStateBean;
 import com.tts.starsky.apperceive.db.provider.ChatContextDBProvider;
 import com.tts.starsky.apperceive.db.provider.MySelfDBProvider;
+import com.tts.starsky.apperceive.db.provider.UserStateDBProvider;
 import com.tts.starsky.apperceive.exception.DBException;
 
 import java.sql.Timestamp;
@@ -29,16 +34,35 @@ public class newMessageNotice implements IMyCallBack {
             System.out.println("=================="+messageBean.toString());
         }
 
+
+//        testInsert();
+
         System.out.println("==================== callBack");
         List<MessageBean> messageBeanList1 = userChatMessageToMessageBean(messageBeanList);
         ChatContextDBProvider chatContextDBProvider = new ChatContextDBProvider();
-//        try {
-//            chatContextDBProvider.insertChatListBean(messageBeanList1);
-//        } catch (DBException e) {
-//            e.printStackTrace();
-//        }
-        test();
+
+        if (messageBeanList1.size()==0) {
+            return;
+        }
+        Long messageId = messageBeanList1.get(messageBeanList1.size()-1).getMessageId();
+        System.out.println("=============messageId: "+messageId);
+
+//        testInsertUserState();
+
+        UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
+        UserStateBean userStateBean = userStateDBProvider.queryUserState();
+        String userLastMessageId = userStateBean.getUserLastMessageId();
+        userStateBean.setUserLastMessageId(String.valueOf(messageId));
+        System.out.println("==================userLastMessageId: "+userLastMessageId);
+
+        try {
+            chatContextDBProvider.insertChatListBean(messageBeanList1);
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
+//        test();
 //        testInsert();
+        updateUserState(userStateBean);
     }
 
 
@@ -94,6 +118,11 @@ public class newMessageNotice implements IMyCallBack {
 
         UserBeanDao userBeanDao = daoSession.getUserBeanDao();
         userBeanDao.insert(new UserBean(Long.valueOf(1), "这是大哥", R.mipmap.ic_launcher_round, 0));
-        userBeanDao.insert(new UserBean(Long.valueOf(2), "这是大哥2", R.mipmap.ic_launcher_round, 0));
+        userBeanDao.insert(new UserBean(Long.valueOf(3), "这是大哥2", R.mipmap.ic_launcher_round, 0));
+    }
+
+    private void updateUserState(UserStateBean userStateBean){
+        UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
+        userStateDBProvider.saveUserState(userStateBean);
     }
 }

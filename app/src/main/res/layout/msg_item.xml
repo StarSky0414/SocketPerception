@@ -9,14 +9,12 @@
         android:id="@+id/left_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        >
+        android:layout_gravity="left">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/ic_launcher_round"
-            />
+            android:background="@mipmap/ic_launcher_round" />
 
         <TextView
             android:id="@+id/left_msg"
@@ -24,31 +22,35 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:textColor="#fff"
+            android:text="aaaaa"
             android:background="@drawable/lift"
-            />
+            android:textColor="#fff" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/right_layout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:background="@drawable/right">
+
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@mipmap/ic_launcher_round" />
 
         <TextView
+            android:paddingTop="17dp"
             android:id="@+id/right_msg"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@mipmap/ic_launcher_round"
-            />
-    </LinearLayout>
+            android:layout_height="59dp"
+            android:layout_centerVertical="true"
+            android:text="aaaaaa"
+            android:layout_toLeftOf="@+id/iv_right"
+            android:background="@drawable/right" />
+
+    </RelativeLayout>
 
 
 </LinearLayout>

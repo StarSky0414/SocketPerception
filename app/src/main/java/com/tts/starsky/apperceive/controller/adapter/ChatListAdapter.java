@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tts.starsky.apperceive.R;
@@ -18,7 +19,7 @@ public class ChatListAdapter  extends RecyclerView.Adapter<ChatListAdapter.ViewH
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout leftLayout;
-        LinearLayout rightLayout;
+        RelativeLayout rightLayout;
 
         TextView leftMsg;
         TextView rightMsg;
@@ -26,7 +27,7 @@ public class ChatListAdapter  extends RecyclerView.Adapter<ChatListAdapter.ViewH
         public ViewHolder(View itemView) {
             super(itemView);
             leftLayout=(LinearLayout) itemView.findViewById(R.id.left_layout);
-            rightLayout=(LinearLayout)itemView.findViewById(R.id.right_layout);
+            rightLayout=(RelativeLayout)itemView.findViewById(R.id.right_layout);
             leftMsg=(TextView) itemView.findViewById(R.id.left_msg);
             rightMsg=(TextView) itemView.findViewById(R.id.right_msg);
         }

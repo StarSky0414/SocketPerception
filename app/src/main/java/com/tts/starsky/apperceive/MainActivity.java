@@ -16,9 +16,16 @@ import android.widget.Toast;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.TextBadgeItem;
+import com.tts.starsky.apperceive.bean.service.SyncMessageRequestBean;
 import com.tts.starsky.apperceive.db.DBBase;
+import com.tts.starsky.apperceive.db.bao.DaoSession;
+import com.tts.starsky.apperceive.db.bean.UserStateBean;
+import com.tts.starsky.apperceive.db.provider.UserStateDBProvider;
+import com.tts.starsky.apperceive.exception.DBException;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
+import com.tts.starsky.apperceive.service.MyBinder;
 import com.tts.starsky.apperceive.service.MyService;
+import com.tts.starsky.apperceive.view.ServiceActivity;
 import com.tts.starsky.apperceive.view.fragment.Trends;
 import com.tts.starsky.apperceive.view.fragment.UnderButtonState;
 
@@ -36,12 +43,30 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
     int lastSelectedPosition = 3;
     private String TAG = MainActivity.class.getSimpleName();
     private Trends mScanFragment;
-    //    private ScanFragment mScanFragment;
     private HomeFragment mHomeFragment;
     private BottomNavigationItem bottomNavigationItem;
     private TextBadgeItem numberBadge;
-    String authorName;
 
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            MyBinder service1 = (MyBinder) service;
+            System.out.println("========== onServiceConnected");
+            UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
+            UserStateBean userStateBean = userStateDBProvider.queryUserState();
+            String userLastMessageId = userStateBean.getUserLastMessageId();
+            String userId = userStateBean.getUserId();
+            SyncMessageRequestBean syncMessageRequestBean = new SyncMessageRequestBean(userId, userLastMessageId);
+            service1.adapterExceptionDispose(EvenBusEnumService.SYNC_MESSAGE,syncMessageRequestBean);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +79,18 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
 //        startService(serviceIntent);
 //        myService.setJsonString(xxxx);
 
+        DBBase.dbBaseinit(this);
         Intent intent = new Intent(MainActivity.this, MyService.class);
-//        startService(intent);
-        bindService(intent, mServiceConnection,
-                Context.BIND_AUTO_CREATE);
-//        MyService myService = new MyService();
-        String temp = authorName;
-        System.out.println("==================="+authorName);
+        bindService(intent,serviceConnection,Context.BIND_AUTO_CREATE);
+
+        DaoSession dbSession = null;
+        try {
+            dbSession = DBBase.getDBBase().getDBSession();
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
+        String userLastMessageId = dbSession.getUserStateBeanDao().queryBuilder().unique().getUserLastMessageId();
+        System.out.println("========================userLastMessageId:"+userLastMessageId);
 //        myService.adapter(EvenBusEnumService.SEND_MESSAGE);
 //        DBTest dbTest = new DBTest();
 //        dbTest.creat(this);
@@ -206,21 +236,5 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
 //    }
 
 
-    ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            System.out.println("aaaaaaaaaaa");
-//           ((MyService.MyBinder) service).getMyService();
-//            authorName = myService.getAuthorName();
-//            Toast.makeText(MainActivity.this, "author name is: " + authorName,
-//                    Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-
-    };
 
 }
