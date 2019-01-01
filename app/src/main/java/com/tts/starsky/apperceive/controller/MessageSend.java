@@ -1,7 +1,6 @@
 package com.tts.starsky.apperceive.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tts.starsky.apperceive.bean.service.SendMessageBean;
 import com.tts.starsky.apperceive.bean.service.SeviceBean;
 import com.tts.starsky.apperceive.bean.tometeor.AdapterRequestBean;
 import com.tts.starsky.apperceive.service.callback.IMyCallBack;
@@ -26,7 +25,7 @@ public class MessageSend implements Runnable{
         jsonString = JSONObject.toJSONString(seviceBean);
     }
 
-    public void messageSend(String pathString,String tempSession) throws IOException {
+    public void messageSend() throws IOException {
         System.out.println("============== is run");
         Socket socket = new Socket(hostAddress, port);
         OutputStream outputStream = socket.getOutputStream();
@@ -49,11 +48,11 @@ public class MessageSend implements Runnable{
         dataOutputStream.flush();
 
 
-        byte[] session = new byte[32];
+        byte[] sessionByte = new byte[32];
         InputStream inputStream = socket.getInputStream();
-        inputStream.read(session);
+        inputStream.read(sessionByte);
 
-        String s = new String(session);
+        String s = new String(sessionByte);
         System.out.println("================s："+s);
         Distribute distribute = new Distribute();
         AdapterRequestBean adapterRequestBean = distribute.resolvePackage(inputStream);
@@ -69,7 +68,7 @@ public class MessageSend implements Runnable{
     @Override
     public void run() {
         try {
-            messageSend(pathString,tempSession);
+            messageSend();
         } catch (IOException e) {
             e.printStackTrace();
         }
