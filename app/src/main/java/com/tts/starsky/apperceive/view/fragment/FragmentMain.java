@@ -31,7 +31,7 @@ public class FragmentMain extends FragmentActivity {
         fragmentList.add(new Find());
         fragmentList.add(new Square());
 //        fragmentList.add(new Trends());
-        fragmentList.add(new My());
+//        fragmentList.add(new MyFragment());
 
 //        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.fr_main);
 

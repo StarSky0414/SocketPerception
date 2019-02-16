@@ -48,6 +48,12 @@
         <activity android:name=".view.ServiceActivity">
 
         </activity>
+        <activity android:name=".view.SendTrendActivity"/>
+        <activity android:name=".view.MyActivity"/>
+
+        <activity android:name=".view.TestActivity">
+
+        </activity>
     </application>
 
 </manifest>

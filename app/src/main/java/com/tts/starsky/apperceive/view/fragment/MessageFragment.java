@@ -5,15 +5,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.tts.starsky.apperceive.R;
@@ -21,7 +18,6 @@ import com.tts.starsky.apperceive.bean.evenbus.RequestNewMessageList;
 import com.tts.starsky.apperceive.bean.evenbus.UpdateMessageListBean;
 import com.tts.starsky.apperceive.controller.adapter.MessageListAdapter;
 import com.tts.starsky.apperceive.db.bean.MessageListBean;
-import com.tts.starsky.apperceive.db.provider.MessageListDBProvider;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,20 +26,15 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class Trends extends Fragment {
+public class MessageFragment extends Fragment {
 
     private List<MessageListBean> dataList;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public static Trends newInstance(String param1) {
-        Trends fragment = new Trends();
-        Bundle args = new Bundle();
-        args.putString("agrs1", param1);
-        fragment.setArguments(args);
+    public static MessageFragment newInstance() {
+        MessageFragment fragment = new MessageFragment();
         return fragment;
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void update(){
@@ -98,10 +89,16 @@ public class Trends extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View inflate = inflater.inflate(R.layout.fragment_trends, container, false);
+        View inflate = inflater.inflate(R.layout.fragment_chat_list, container, false);
         mRecyclerView=(XRecyclerView)inflate.findViewById(R.id.recyclerview);
 
-        dataList = new MessageListDBProvider().queryMessageList();
+//        dataList = new MessageListDBProvider().queryMessageList();
+        MessageListBean messageListBean = new MessageListBean("1",1,"hahah","aa","2019-02-12 19:51:31",4);
+        List<MessageListBean> messageListBeans = new ArrayList<>();
+        messageListBeans.add(messageListBean);
+        messageListBeans.add(messageListBean);
+        messageListBeans.add(messageListBean);
+        dataList = messageListBeans;
         mAdapter = new MessageListAdapter(getContext(), dataList);
 
         update();

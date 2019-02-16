@@ -15,6 +15,7 @@ public class MessageSend implements Runnable{
     private String pathString;
     private String jsonString;
     private static String hostAddress="192.168.43.212";
+//    private static String hostAddress="192.168.43.212";
     private static final int port=8090;
 
     private static final String tempSession = "f2634392b55544208704edd0cd1cd6a5";

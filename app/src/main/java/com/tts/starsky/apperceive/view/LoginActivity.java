@@ -11,7 +11,7 @@ import com.tts.starsky.apperceive.view.fragment.FragmentMain;
 //import com.tts.starsky.apperceive.controller.communication.LoginControl;
 
 
-public class LoginActivity extends MyActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private static Button submit;
     private static EditText et_login;
     private static EditText et_password;

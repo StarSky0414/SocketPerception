@@ -35,7 +35,7 @@ public class newMessageNotice implements IMyCallBack {
         }
 
 
-//        testInsert();
+        testInsert();
 
         System.out.println("==================== callBack");
         List<MessageBean> messageBeanList1 = userChatMessageToMessageBean(messageBeanList);
@@ -47,7 +47,7 @@ public class newMessageNotice implements IMyCallBack {
         Long messageId = messageBeanList1.get(messageBeanList1.size()-1).getMessageId();
         System.out.println("=============messageId: "+messageId);
 
-//        testInsertUserState();
+        testInsertUserState();
 
         UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
         UserStateBean userStateBean = userStateDBProvider.queryUserState();
@@ -122,6 +122,12 @@ public class newMessageNotice implements IMyCallBack {
     }
 
     private void updateUserState(UserStateBean userStateBean){
+        UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
+        userStateDBProvider.saveUserState(userStateBean);
+    }
+
+    private void testInsertUserState(){
+        UserStateBean userStateBean = new UserStateBean("2", "哈哈哈", "男", "347876c4105f498cb6ec9547d198fe5e", "5");
         UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
         userStateDBProvider.saveUserState(userStateBean);
     }

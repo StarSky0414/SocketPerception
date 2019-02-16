@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.tts.starsky.apperceive.MainActivity;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.ChatListBean;
 import com.tts.starsky.apperceive.bean.service.SendMessageBean;
@@ -30,11 +29,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActivity extends MyActivity{
+public class ChatActivity extends BaseActivity {
 
 
     private List<ChatListBean> ChatListBeanList = new ArrayList<>();
@@ -65,9 +63,9 @@ public class ChatActivity extends MyActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.active_chat);
-        chatContextDBProvider = new ChatContextDBProvider();
-        EventBus.getDefault().register(this);
-        init();
+//        chatContextDBProvider = new ChatContextDBProvider();
+//        EventBus.getDefault().register(this);
+//        init();
 
 
 

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,20 +14,11 @@ import android.widget.Toast;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.TextBadgeItem;
-import com.tts.starsky.apperceive.bean.service.SyncMessageRequestBean;
-import com.tts.starsky.apperceive.db.DBBase;
-import com.tts.starsky.apperceive.db.bao.DaoSession;
-import com.tts.starsky.apperceive.db.bean.UserStateBean;
-import com.tts.starsky.apperceive.db.provider.UserStateDBProvider;
-import com.tts.starsky.apperceive.exception.DBException;
-import com.tts.starsky.apperceive.service.EvenBusEnumService;
-import com.tts.starsky.apperceive.service.MyBinder;
-import com.tts.starsky.apperceive.service.MyService;
-import com.tts.starsky.apperceive.view.ServiceActivity;
-import com.tts.starsky.apperceive.view.fragment.Trends;
+import com.tts.starsky.apperceive.view.fragment.MyFragment;
+import com.tts.starsky.apperceive.view.fragment.MessageFragment;
+import com.tts.starsky.apperceive.view.fragment.TrendFragment;
 import com.tts.starsky.apperceive.view.fragment.UnderButtonState;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -42,7 +31,7 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
     private BottomNavigationBar bottomNavigationBar;
     int lastSelectedPosition = 3;
     private String TAG = MainActivity.class.getSimpleName();
-    private Trends mScanFragment;
+    private MessageFragment mScanFragment;
     private HomeFragment mHomeFragment;
     private BottomNavigationItem bottomNavigationItem;
     private TextBadgeItem numberBadge;
@@ -52,14 +41,14 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
 
-            MyBinder service1 = (MyBinder) service;
-            System.out.println("========== onServiceConnected");
-            UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
-            UserStateBean userStateBean = userStateDBProvider.queryUserState();
-            String userLastMessageId = userStateBean.getUserLastMessageId();
-            String userId = userStateBean.getUserId();
-            SyncMessageRequestBean syncMessageRequestBean = new SyncMessageRequestBean(userId, userLastMessageId);
-            service1.adapterExceptionDispose(EvenBusEnumService.SYNC_MESSAGE,syncMessageRequestBean);
+//            MyBinder service1 = (MyBinder) service;
+//            System.out.println("========== onServiceConnected");
+//            UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
+//            UserStateBean userStateBean = userStateDBProvider.queryUserState();
+//            String userLastMessageId = userStateBean.getUserLastMessageId();
+//            String userId = userStateBean.getUserId();
+//            SyncMessageRequestBean syncMessageRequestBean = new SyncMessageRequestBean(userId, userLastMessageId);
+//            service1.adapterExceptionDispose(EvenBusEnumService.SYNC_MESSAGE,syncMessageRequestBean);
         }
 
         @Override
@@ -73,24 +62,24 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DBBase.dbBaseinit(this);
-        EventBus.getDefault().register(this);
+//        DBBase.dbBaseinit(this);
+//        EventBus.getDefault().register(this);
 //        Intent serviceIntent = new Intent(MainActivity.this, MessageService.class);
 //        startService(serviceIntent);
 //        myService.setJsonString(xxxx);
 
-        DBBase.dbBaseinit(this);
-        Intent intent = new Intent(MainActivity.this, MyService.class);
-        bindService(intent,serviceConnection,Context.BIND_AUTO_CREATE);
-
-        DaoSession dbSession = null;
-        try {
-            dbSession = DBBase.getDBBase().getDBSession();
-        } catch (DBException e) {
-            e.printStackTrace();
-        }
-        String userLastMessageId = dbSession.getUserStateBeanDao().queryBuilder().unique().getUserLastMessageId();
-        System.out.println("========================userLastMessageId:"+userLastMessageId);
+//        DBBase.dbBaseinit(this);
+//        Intent intent = new Intent(MainActivity.this, MyService.class);
+//        bindService(intent,serviceConnection,Context.BIND_AUTO_CREATE);
+//
+//        DaoSession dbSession = null;
+//        try {
+//            dbSession = DBBase.getDBBase().getDBSession();
+//        } catch (DBException e) {
+//            e.printStackTrace();
+//        }
+//        String userLastMessageId = dbSession.getUserStateBeanDao().queryBuilder().unique().getUserLastMessageId();
+//        System.out.println("========================userLastMessageId:"+userLastMessageId);
 //        myService.adapter(EvenBusEnumService.SEND_MESSAGE);
 //        DBTest dbTest = new DBTest();
 //        dbTest.creat(this);
@@ -174,20 +163,17 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
                     mHomeFragment = HomeFragment.newInstance("首页");
                 }
                 Toast.makeText(this, "bbbbbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
+                Log.d("===================", "HomeFragment.newInstance(\"首页\")");
                 transaction.replace(R.id.tb, mHomeFragment);
                 break;
             case 1:
-                if (mScanFragment == null) {
-                    mScanFragment = Trends.newInstance("扫一扫");
-
-                }
-                transaction.replace(R.id.tb, mScanFragment);
+                transaction.replace(R.id.tb, MessageFragment.newInstance());
                 break;
             case 2:
-                if (mHomeFragment == null) {
-                    mHomeFragment = HomeFragment.newInstance("个人中心");
-                }
-                transaction.replace(R.id.tb, mHomeFragment);
+                transaction.replace(R.id.tb, TrendFragment.newInstance());
+                break;
+            case 3:
+                transaction.replace(R.id.tb, MyFragment.newInstance());
                 break;
 
             default:

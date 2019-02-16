@@ -9,7 +9,7 @@ import com.tts.starsky.apperceive.R;
 
 //////import com.tts.starsky.apperceive.controller.communication.LoginControl;
 
-public class RegisterActivity extends MyActivity implements View.OnClickListener {
+public class RegisterActivity extends BaseActivity implements View.OnClickListener {
 
     private EditText et_phone_number;
     private EditText et_register_num;
