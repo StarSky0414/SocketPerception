@@ -38,7 +38,7 @@ public class ServiceActivity extends Activity {
             String userLastMessageId = userStateBean.getUserLastMessageId();
             String userId = userStateBean.getUserId();
             SyncMessageRequestBean syncMessageRequestBean = new SyncMessageRequestBean(userId, userLastMessageId);
-            service1.adapterExceptionDispose(EvenBusEnumService.SYNC_MESSAGE,syncMessageRequestBean);
+//            service1.adapterExceptionDispose(EvenBusEnumService.SYNC_MESSAGE,syncMessageRequestBean);
         }
 
         @Override

@@ -14,6 +14,9 @@ import android.widget.Toast;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.TextBadgeItem;
+import com.tts.starsky.apperceive.bean.UserStateInfo;
+import com.tts.starsky.apperceive.oss.InitOssClient;
+import com.tts.starsky.apperceive.oss.OSSConfig;
 import com.tts.starsky.apperceive.view.fragment.MyFragment;
 import com.tts.starsky.apperceive.view.fragment.MessageFragment;
 import com.tts.starsky.apperceive.view.fragment.TrendFragment;
@@ -29,7 +32,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class MainActivity extends Activity implements BottomNavigationBar.OnTabSelectedListener {
 
     private BottomNavigationBar bottomNavigationBar;
-    int lastSelectedPosition = 3;
+    int lastSelectedPosition = 0;
     private String TAG = MainActivity.class.getSimpleName();
     private MessageFragment mScanFragment;
     private HomeFragment mHomeFragment;
@@ -61,7 +64,8 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        InitOssClient.initOssClient(this,OSSConfig.stsServer,OSSConfig.endPoint);
+        UserStateInfo.setUserId("1");
 //        DBBase.dbBaseinit(this);
 //        EventBus.getDefault().register(this);
 //        Intent serviceIntent = new Intent(MainActivity.this, MessageService.class);

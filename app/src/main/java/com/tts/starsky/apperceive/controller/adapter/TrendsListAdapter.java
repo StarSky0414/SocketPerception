@@ -13,14 +13,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.TrendsListItemBean;
 import com.tts.starsky.apperceive.view.MyActivity;
+import com.tts.starsky.apperceive.view.OtherUserActivity;
 import com.tts.starsky.apperceive.view.fragment.MyFragment;
 
 import java.util.List;
 
-public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.ViewHolder> implements View.OnClickListener  {
+import jp.wasabeef.glide.transformations.CropSquareTransformation;
+
+public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.ViewHolder> implements View.OnClickListener {
 
     AdapterView.OnItemClickListener mOnItemClickListener;
     private List<TrendsListItemBean> dataList;
@@ -56,13 +60,18 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull TrendsListAdapter.ViewHolder viewHolder, final int i) {
-        System.out.println(viewHolder.getItemId());
 //viewHolder.iv_content.setImageResource();
         this.i = i;
-        System.out.println(this.i);
+        System.out.println("[============" + i);
 
-        viewHolder.tv_user_nick.setOnClickListener(this);
-        viewHolder.iv_user_head_photo.setOnClickListener(this);
+//        viewHolder.tv_user_nick.setOnClickListener(this);
+//        viewHolder.iv_user_head_photo.setOnClickListener(this);
+//
+//        viewHolder.tv_content.setText(dataList.get(i).getContent());
+//        System.out.println("[============" + dataList.get(i).getUrl());
+//        Glide.with(context).
+//                load(dataList.get(i).getUrl()).
+//                into(viewHolder.iv_content);
 //        if (mOnItemClickListener != null) {
 //            MessageListOnClickListener messageListOnClickListener = new MessageListOnClickListener(dataList,i);
 //            viewHolder.itemView.setOnClickListener(messageListOnClickListener);
@@ -72,11 +81,11 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_user_nick:
             case R.id.iv_user_head_photo:
-                Toast.makeText(context, "onClick    "+i+"    "+dataList.get(i).getSendUserId(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this.context, MyActivity.class);
+                Toast.makeText(context, "onClick    " + i + "    " + dataList.get(i).getSendUserId(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this.context, OtherUserActivity.class);
                 context.startActivity(intent);
                 break;
         }
@@ -84,7 +93,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        if (dataList == null){
+        if (dataList == null) {
             return 0;
         }
         return dataList.size();
@@ -92,7 +101,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
     }
 
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView iv_user_head_photo;
         ImageView iv_content;
         ImageView iv_like;
@@ -117,7 +126,6 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
 
         }
     }
-
 
 
 }

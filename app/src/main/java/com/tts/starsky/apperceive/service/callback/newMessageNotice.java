@@ -1,5 +1,6 @@
 package com.tts.starsky.apperceive.service.callback;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -64,7 +65,6 @@ public class newMessageNotice implements IMyCallBack {
 //        testInsert();
         updateUserState(userStateBean);
     }
-
 
     private List<MessageBean> userChatMessageToMessageBean(List<UserChatMessage>  userChatMessages){
         MySelfDBProvider mySelfDBProvider = new MySelfDBProvider();

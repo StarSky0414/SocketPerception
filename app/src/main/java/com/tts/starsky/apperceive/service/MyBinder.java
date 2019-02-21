@@ -1,14 +1,8 @@
 package com.tts.starsky.apperceive.service;
 
 import android.os.Binder;
-
-import com.tts.starsky.apperceive.bean.service.SendMessageBean;
 import com.tts.starsky.apperceive.bean.service.SeviceBean;
-import com.tts.starsky.apperceive.bean.service.SyncMessageRequestBean;
 import com.tts.starsky.apperceive.controller.MessageSend;
-import com.tts.starsky.apperceive.db.bean.UserStateBean;
-import com.tts.starsky.apperceive.db.provider.UserStateDBProvider;
-
 import java.io.IOException;
 
 public class MyBinder extends Binder {
@@ -18,20 +12,22 @@ public class MyBinder extends Binder {
         System.out.println("================" + evenBusEnumService.toString());
         System.out.println("================" + evenBusEnumService.getPathString());
         MessageSend messageSend;
-        UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
-        UserStateBean userStateBean = userStateDBProvider.queryUserState();
-        switch (evenBusEnumService) {
-            /** 发送文本消息 */
-            case SEND_MESSAGE:
+//        UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
+//        UserStateBean userStateBean = userStateDBProvider.queryUserState();
+//        switch (evenBusEnumService) {
+//            case TRENDS_CREATE:
+
+//            /** 发送文本消息 */
+//            case SEND_MESSAGE:
                 messageSend= new MessageSend(evenBusEnumService.getPathString(), seviceBean,evenBusEnumService.getMyCallBack());
                 connectPool.execute(messageSend);
-                break;
-            case SYNC_MESSAGE:
-//                SyncMessageRequestBean syncMessageRequestBean = new SyncMessageRequestBean("1", userStateBean.getUserLastMessageId());
-                messageSend = new MessageSend(evenBusEnumService.getPathString(),seviceBean ,evenBusEnumService.getMyCallBack());
-                connectPool.execute(messageSend);
-                break;
-        }
+//                break;
+//            case SYNC_MESSAGE:
+////                SyncMessageRequestBean syncMessageRequestBean = new SyncMessageRequestBean("1", userStateBean.getUserLastMessageId());
+//                messageSend = new MessageSend(evenBusEnumService.getPathString(),seviceBean ,evenBusEnumService.getMyCallBack());
+//                connectPool.execute(messageSend);
+//                break;
+//        }
     }
 
     /**

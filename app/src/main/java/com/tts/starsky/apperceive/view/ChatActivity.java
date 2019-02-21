@@ -50,7 +50,7 @@ public class ChatActivity extends BaseActivity {
             UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
             String userId = userStateDBProvider.queryUserState().getUserId();
             SendMessageBean sendMessageBean = new SendMessageBean(userId,"1",SendContent,null);
-            service1.adapterExceptionDispose(EvenBusEnumService.SEND_MESSAGE,sendMessageBean);
+//            service1.adapterExceptionDispose(EvenBusEnumService.SEND_MESSAGE,sendMessageBean);
         }
 
         @Override

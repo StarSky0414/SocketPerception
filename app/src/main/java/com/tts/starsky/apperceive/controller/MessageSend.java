@@ -1,5 +1,7 @@
 package com.tts.starsky.apperceive.controller;
 
+import android.app.Activity;
+
 import com.alibaba.fastjson.JSONObject;
 import com.tts.starsky.apperceive.bean.service.SeviceBean;
 import com.tts.starsky.apperceive.bean.tometeor.AdapterRequestBean;
@@ -14,13 +16,14 @@ public class MessageSend implements Runnable{
     private IMyCallBack iMyCallBack;
     private String pathString;
     private String jsonString;
-    private static String hostAddress="192.168.43.212";
+
+    private static String hostAddress="192.168.1.102";
 //    private static String hostAddress="192.168.43.212";
     private static final int port=8090;
 
     private static final String tempSession = "f2634392b55544208704edd0cd1cd6a5";
 
-    public MessageSend(String pathString, SeviceBean seviceBean , IMyCallBack iMyCallBack) {
+    public MessageSend(String pathString, SeviceBean seviceBean, IMyCallBack iMyCallBack) {
         this.pathString=pathString;
         this.iMyCallBack=iMyCallBack;
         jsonString = JSONObject.toJSONString(seviceBean);
