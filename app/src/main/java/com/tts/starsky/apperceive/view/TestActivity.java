@@ -156,11 +156,19 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.tts.starsky.apperceive.R;
+import com.tts.starsky.apperceive.db.DBBase;
 import com.tts.starsky.apperceive.oss.InitOssClient;
 import com.tts.starsky.apperceive.oss.OSSConfig;
 import com.tts.starsky.apperceive.oss.UpFile;
+import com.tts.starsky.apperceive.service.MyService;
 
 public class TestActivity extends Activity {
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_trends_item);
+    }
 
 }

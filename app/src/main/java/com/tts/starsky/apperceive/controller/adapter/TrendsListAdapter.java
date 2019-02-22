@@ -49,6 +49,15 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         notifyDataSetChanged();
     }
 
+    public int getMinId(){
+        for (TrendsListItemBean trendsListItemBean : dataList){
+            System.out.println("trendsListItemBean =============== : "+trendsListItemBean.toString());
+        }
+        int id = dataList.get(dataList.size() - 1).getId();
+        System.out.println("getMinId ============ ："+id);
+        return id;
+    }
+
     @NonNull
     @Override
     public TrendsListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
@@ -64,14 +73,16 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         this.i = i;
         System.out.println("[============" + i);
 
-//        viewHolder.tv_user_nick.setOnClickListener(this);
-//        viewHolder.iv_user_head_photo.setOnClickListener(this);
-//
-//        viewHolder.tv_content.setText(dataList.get(i).getContent());
-//        System.out.println("[============" + dataList.get(i).getUrl());
-//        Glide.with(context).
-//                load(dataList.get(i).getUrl()).
-//                into(viewHolder.iv_content);
+        viewHolder.tv_user_nick.setOnClickListener(this);
+        viewHolder.iv_user_head_photo.setOnClickListener(this);
+
+        viewHolder.tv_content.setText(dataList.get(i).getContent());
+        System.out.println("[============" + dataList.get(i).getUrl());
+        Glide.with(context).
+                load(dataList.get(i).getUrl()).
+                into(viewHolder.iv_content);
+
+        viewHolder.tv_trend_time.setText(dataList.get(i).getTime());
 //        if (mOnItemClickListener != null) {
 //            MessageListOnClickListener messageListOnClickListener = new MessageListOnClickListener(dataList,i);
 //            viewHolder.itemView.setOnClickListener(messageListOnClickListener);
@@ -111,6 +122,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         TextView tv_user_nick;
         TextView tv_content;
         TextView tv_like_num;
+        TextView tv_trend_time;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -123,6 +135,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
             tv_user_nick = itemView.findViewById(R.id.tv_user_nick);
             tv_content = itemView.findViewById(R.id.tv_content);
             tv_like_num = itemView.findViewById(R.id.tv_like_num);
+            tv_trend_time = itemView.findViewById(R.id.tv_trend_time);
 
         }
     }

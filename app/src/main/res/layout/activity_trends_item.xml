@@ -1,101 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
     android:layout_margin="5dp"
-    >
+    android:background="#ffffff">
 
     <LinearLayout
-        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:orientation="vertical">
+
         <RelativeLayout
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
             <ImageView
                 android:id="@+id/iv_user_head_photo"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/starsky"
-                />
+                android:background="@drawable/starsky" />
+
             <TextView
                 android:id="@+id/tv_user_nick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/iv_user_head_photo"
-                android:text="星空"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:textColor="#000"
-                />
+                android:layout_toRightOf="@id/iv_user_head_photo"
+                android:text="星空"
+                android:textColor="#000" />
+
+            <TextView
+                android:id="@+id/tv_trend_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:singleLine="false"
+                android:text="2018-12-27\n  09:42:58"
+                android:textColor="#8a8a8a"
+                android:textSize="11dp" />
         </RelativeLayout>
+
         <ImageView
             android:id="@+id/iv_content"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@drawable/test_photo"
-            />
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY" />
+
         <TextView
             android:id="@+id/tv_content"
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="七月的风 八月的雨\n卑微的我 喜欢遥远的你"
-            android:textColor="#000"
+            android:layout_margin="10dp"
             android:singleLine="false"
-            />
+            android:text="七月的风 八月的雨\n卑微的我 喜欢遥远的你"
+            android:textColor="#000" />
 
         <RelativeLayout
             android:id="@+id/rl_but"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
-                android:layout_marginLeft="10dp"
                 android:id="@+id/iv_like"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/like"
-                />
-            <ImageView
                 android:layout_marginLeft="10dp"
+                android:background="@drawable/like" />
 
+            <ImageView
                 android:id="@+id/iv_comment"
-                android:layout_toRightOf="@id/iv_like"
+
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/iv_like"
+                android:background="@drawable/comment" />
+
+            <Button
+                android:id="@+id/bt_trend_my_update"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="更新" />
+
+            <Button
+                android:id="@+id/bt_trend_my_dele"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/bt_trend_my_update"
                 android:background="@drawable/comment"
 
                 />
+
             <ImageView
-                android:layout_marginLeft="10dp"
                 android:id="@+id/iv_collect"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/iv_comment"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/collect"
-                />
+                android:background="@drawable/collect" />
+
             <ImageView
-                android:layout_marginRight="10dp"
                 android:id="@+id/iv_liked"
-                android:layout_toLeftOf="@id/tv_like_num"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/liked"
-                />
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/tv_like_num"
+                android:background="@drawable/liked" />
 
             <TextView
-                android:layout_marginRight="10dp"
                 android:id="@+id/tv_like_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#8a8a8a"
-                android:text="100 like"
                 android:layout_alignParentRight="true"
-                />
-
+                android:layout_marginRight="10dp"
+                android:text="100 like"
+                android:textColor="#8a8a8a" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

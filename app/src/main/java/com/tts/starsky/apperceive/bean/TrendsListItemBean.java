@@ -4,7 +4,7 @@ public class TrendsListItemBean implements TempIn {
 
 
     // 消息id
-    private int id ;
+    private int id;
     // 发送消息id
     private String send_user_id;
     // 内容
@@ -14,13 +14,14 @@ public class TrendsListItemBean implements TempIn {
     // 时间
     private String time;
 
-    public TrendsListItemBean(String sendUserId, String content, String url) {
+    public TrendsListItemBean(int id, String sendUserId, String content, String url) {
+        this.id = id;
         this.send_user_id = sendUserId;
         this.content = content;
         this.photo_url = url;
     }
 
-    public TrendsListItemBean(){
+    public TrendsListItemBean() {
 
     }
 

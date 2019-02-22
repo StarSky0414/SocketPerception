@@ -17,25 +17,19 @@
             android:layout_height="wrap_content"
             android:text="广场动态"
             />
-        <TextView
+        <ImageView
             android:id="@+id/tv_top_trend_right"
             android:text="我的动态 》"
             android:layout_centerInParent="true"
             android:textSize="15dp"
             android:layout_marginRight="20dp"
             android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/create_trend"
+            />
 
-        <TextView
-            android:id="@+id/tv_top_trend_left"
-            android:text="《 广场动态"
-            android:layout_centerInParent="true"
-            android:textSize="15dp"
-            android:layout_marginLeft="20dp"
-            android:layout_alignParentLeft="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+
     </RelativeLayout>
 
     <!-- TODO: Update blank fragment layout -->

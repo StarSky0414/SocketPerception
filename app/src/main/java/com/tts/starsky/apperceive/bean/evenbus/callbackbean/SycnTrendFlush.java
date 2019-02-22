@@ -9,7 +9,12 @@ import java.util.List;
  */
 public class SycnTrendFlush {
 
+    public enum StatSign{
+        Load,Flush
+    }
+
     private List<SendTrendsBean> sendTrendsBeanList;
+    private StatSign statSign;
 
     public SycnTrendFlush(List<SendTrendsBean> sendTrendsBeanList) {
         this.sendTrendsBeanList = sendTrendsBeanList;
@@ -19,4 +24,11 @@ public class SycnTrendFlush {
         return sendTrendsBeanList;
     }
 
+    public StatSign getStatSign() {
+        return statSign;
+    }
+
+    public void setStatSign(StatSign statSign) {
+        this.statSign = statSign;
+    }
 }
