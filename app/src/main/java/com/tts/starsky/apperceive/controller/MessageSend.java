@@ -18,10 +18,11 @@ public class MessageSend implements Runnable{
     private String jsonString;
 
     private static String hostAddress="192.168.1.108";
+//    private static String hostAddress="120.25.96.141";
 //    private static String hostAddress="192.168.43.212";
     private static final int port=8090;
 
-    private static final String tempSession = "f2634392b55544208704edd0cd1cd6a5";
+    private static final String tempSession = "2c6ca101c9684cf2a1f243e84679dfe8";
 
     public MessageSend(String pathString, SeviceBean seviceBean, IMyCallBack iMyCallBack) {
         this.pathString=pathString;

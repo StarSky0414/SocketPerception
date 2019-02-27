@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.tts.starsky.apperceive.R;
+import com.tts.starsky.apperceive.view.MyTrendsActivity;
 import com.tts.starsky.apperceive.view.SendTrendActivity;
 
 public class MyFragment extends Fragment implements View.OnClickListener{
@@ -42,7 +43,7 @@ public class MyFragment extends Fragment implements View.OnClickListener{
                 Toast.makeText(this.getContext(),
                         "按钮被点击", Toast.LENGTH_SHORT).show();
                 //这里是弹出一个消息---"按钮被点击"
-                Intent intent = new Intent(getActivity(),SendTrendActivity.class) ;
+                Intent intent = new Intent(getActivity(),MyTrendsActivity.class) ;
                 startActivity(intent);
         }
     }

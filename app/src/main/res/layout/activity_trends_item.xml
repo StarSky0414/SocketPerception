@@ -5,6 +5,12 @@
     android:layout_margin="5dp"
     android:background="#ffffff">
 
+    <TextView
+        android:id="@+id/tv_trend_id"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,7 +79,6 @@
 
             <ImageView
                 android:id="@+id/iv_comment"
-
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginLeft="10dp"
@@ -85,7 +90,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginLeft="10dp"
-                android:text="更新" />
+                android:background="@drawable/re_write" />
 
             <Button
                 android:id="@+id/bt_trend_my_dele"
@@ -93,7 +98,7 @@
                 android:layout_height="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/bt_trend_my_update"
-                android:background="@drawable/comment"
+                android:background="@drawable/dele"
 
                 />
 

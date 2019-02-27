@@ -1,25 +1,24 @@
-package com.tts.starsky.apperceive.view.fragment;
+package com.tts.starsky.apperceive.view;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.os.IBinder;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -33,35 +32,59 @@ import com.tts.starsky.apperceive.controller.adapter.TrendsListAdapter;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
 import com.tts.starsky.apperceive.service.MyBinder;
 import com.tts.starsky.apperceive.service.MyService;
-import com.tts.starsky.apperceive.view.SendTrendActivity;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrendFragment extends Fragment implements View.OnClickListener {
+/**
+ * 我的动态管理展示
+ */
+public class MyTrendsActivity  extends Activity{
 
+    private AlertDialog.Builder builder;
     // 定义
-    private XRecyclerView mRecyclerView;
+//    private XRecyclerView mRecyclerView;
     private TrendsListAdapter mAdapter;
+    private XRecyclerView mRecyclerView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_trends);
 
 
-    public static TrendFragment newInstance() {
-        TrendFragment trendFragment = new TrendFragment();
-        return trendFragment;
+        EventBus.getDefault().register(this);
+
+        List<TrendsListItemBean> dataList = new ArrayList<>();
+        mAdapter = new TrendsListAdapter(this, dataList);
+        mAdapter.setMyBinder(myBinder);
+
+        init();
+
+        Intent intentServer = new Intent(this, MyService.class);
+        bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
+
+
     }
 
     /**
-     * 初始化RecyclerView
+     * 初始化界面
      */
-    @TargetApi(Build.VERSION_CODES.M)
-    private void init(){
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+    private void init() {
+
+
+        //======================
+        //  初始化 RecyclerView
+        //======================
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-
-
+        mRecyclerView = (XRecyclerView) findViewById(R.id.rl_recyclerview);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
         // 可以设置是否开启加载更多/下拉刷新
@@ -78,18 +101,7 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
             // 下拉刷新
             @Override
             public void onRefresh() {
-//                mAdapter.addtData(testList());
-//                mAdapter.changeData(dataList);
-
-                // 为了看效果，加了一个等待效果，正式的时候直接写mRecyclerView.refreshComplete();
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//
-//                    }
-//                }, 2000);
-                SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
+                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
                 myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
             }
 
@@ -97,55 +109,34 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
             public void onLoadMore() {
                 SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), String.valueOf(mAdapter.getMinId()));
                 myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_LOAD, syncTrendsBean);
-
-                // 为了看效果，加了一个等待效果，正式的时候直接写mRecyclerView.loadMoreComplete();
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mRecyclerView.loadMoreComplete();
-//                    }
-//                }, 2000);
             }
         });
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.tv_user_nick:
+//            case R.id.iv_user_head_photo:
+////                Toast.makeText(this, "onClick    " + i + "    " + dataList.get(i).getSendUserId(), Toast.LENGTH_SHORT).show();
+//                Toast
+//                Intent intent = new Intent(this, OtherUserActivity.class);
+//                startActivity(intent);
+//                break;
+//            case R.id.bt_trend_my_dele:
+//                //    显示出该对话框
+//                builder.show();
+////                if (dialogSign == DialogSign.S){
+////                    SendTrendsBean sendTrendsBean = new SendTrendsBean();
+////                    TrendsListItemBean trendsListItemBean = dataList.get();
+////                    sendTrendsBean.setId(trendsListItemBean.getId());
+////                    myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_DELETE,sendTrendsBean);
+////                }
+//                break;
+//        }
+//    }
 
-        EventBus.getDefault().register(this);
-        Intent intentServer = new Intent(getContext(), MyService.class);
-        getContext().bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
-
-
-
-        View inflate = inflater.inflate(R.layout.fragment_trends, container, false);
-        mRecyclerView = (XRecyclerView) inflate.findViewById(R.id.rl_recyclerview);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(mRecyclerView.getLayoutParams());
-        layoutParams.setMargins(0,0,0,150);
-        mRecyclerView.setLayoutParams(layoutParams);
-
-        ImageView tv_top_trend_right = (ImageView) inflate.findViewById(R.id.tv_top_trend_right);
-        tv_top_trend_right.setOnClickListener(this);
-
-
-
-        List<TrendsListItemBean> dataList = new ArrayList<>();
-        mAdapter = new TrendsListAdapter(getContext(), dataList);
-
-        init();
-        return inflate;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-    }
 
     /**
      *   服务调用
@@ -155,8 +146,14 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             myBinder = (MyBinder) service;
-            mAdapter.setHideOtherUser();
-            SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
+            mAdapter.setHideMy();
+
+
+            // test
+            UserStateInfo.setUserId("1");
+
+            SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
+            System.out.println("syncTrendsBean: ============= "+syncTrendsBean.toString());
             myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
         }
 
@@ -166,10 +163,7 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
         }
     };
 
-    /**
-     *  数据请求回调
-     * @param sycnTrendFlush 服务器返回数据
-     */
+
 
     @SuppressLint("NewApi")
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -195,13 +189,25 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
         }
         mRecyclerView.refreshComplete();
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.tv_top_trend_right:
-                Intent intent=new Intent(this.getActivity(), SendTrendActivity.class);
-                startActivity(intent);
-        }
+    @SuppressLint("NewApi")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void SendTrendDeleCallBack(SendTrendsBean sendTrendsBean) {
+        System.out.println("===   SendTrendDeleCallBack  ============");
+        myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_DELETE, sendTrendsBean);
     }
+
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+////        EventBus.getDefault().register(this);
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        EventBus.getDefault().unregister(this);
+//    }
+
+
 }
