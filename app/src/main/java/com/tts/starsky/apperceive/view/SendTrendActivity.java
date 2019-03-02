@@ -19,8 +19,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.bean.evenbus.callbackbean.SendTrendCreateBean;
@@ -46,31 +48,50 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             "android.permission.READ_EXTERNAL_STORAGE",
-            "android.permission.WRITE_EXTERNAL_STORAGE" };
+            "android.permission.WRITE_EXTERNAL_STORAGE"};
     private EditText et_send_trend;
     private Button bt_send_context;
     private SendTrendsBean sendTrendsBean;
     private Activity activity;
+    private ImageView iv_preview_show;
+    private MyBinder myBinder;
 
     //所需权限
 //    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intentServer = new Intent(this, MyService.class);
+        bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
         setContentView(R.layout.active_send_trend);
         sendTrendsBean = new SendTrendsBean();
         EventBus.getDefault().register(this);
-        this.activity=this;
+        this.activity = this;
         Button bt_add_photo = findViewById(R.id.bt_add_photo);
         et_send_trend = findViewById(R.id.et_send_trend);
         bt_send_context = findViewById(R.id.bt_send_context);
+        iv_preview_show = (ImageView) findViewById(R.id.iv_preview_show);
+
         bt_add_photo.setOnClickListener(this);
         bt_send_context.setOnClickListener(this);
 
-        verifyStoragePermissions(this);
+        Intent intent = getIntent();
+        String trendsBeanId = intent.getStringExtra("trendsBeanId");
+
+        if (trendsBeanId != null && trendsBeanId.equals("")) {
+            System.out.println("=================trendsBeanId "+trendsBeanId);
+            String trendsBeanContent = intent.getStringExtra("trendsBeanContent");
+            String trendsBeanUrl = intent.getStringExtra("trendsBeanUrl");
+            sendTrendsBean.setId(Integer.valueOf(trendsBeanId));
+            System.out.println("=================trendsBeanContent "+trendsBeanContent);
+            et_send_trend.setText(trendsBeanContent);
+            Glide.with(this).
+                    load(trendsBeanUrl).
+                    into(iv_preview_show);
+        } else {
+            verifyStoragePermissions(this);
+        }
     }
-
-
 
 
     public static void verifyStoragePermissions(Activity activity) {
@@ -80,7 +101,7 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
                     "android.permission.WRITE_EXTERNAL_STORAGE");
             if (permission != PackageManager.PERMISSION_GRANTED) {
                 // 没有写的权限，去申请写的权限，会弹出对话框
-                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,REQUEST_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,10 +122,17 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
                 String trendContext = et_send_trend.getText().toString();
                 sendTrendsBean.setContent(trendContext);
                 sendTrendsBean.setSendUserId(UserStateInfo.getUserId());
-                System.out.println("==============="+sendTrendsBean.toString());
-                Toast.makeText(this, "hhh"+trendContext, Toast.LENGTH_SHORT).show();
-                Intent intentServer = new Intent(this, MyService.class);
-                bindService(intentServer,serviceConnection,Context.BIND_AUTO_CREATE);
+                System.out.println("===============" + sendTrendsBean.toString());
+                Toast.makeText(this, "hhh" + trendContext, Toast.LENGTH_SHORT).show();
+
+                if (sendTrendsBean.getId() != 0){
+                    myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_UPDATE, sendTrendsBean);
+                }else {
+
+                    myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_CREATE, sendTrendsBean);
+                }
+
+                break;
         }
     }
 
@@ -127,16 +155,16 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
     //加载图片
     private void showImage(final String imaePath) {
         Bitmap bm = BitmapFactory.decodeFile(imaePath);
-        ((ImageView) findViewById(R.id.iv_preview_show)).setImageBitmap(bm);
+        iv_preview_show.setImageBitmap(bm);
 
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 UpFile upFile = new UpFile();
-                String photoUpPath = OSSConfig.upRootPath + "trend/" + UserStateInfo.getUserId() +"/"+ System.currentTimeMillis();
+                String photoUpPath = OSSConfig.upRootPath + "trend/" + UserStateInfo.getUserId() + "/" + System.currentTimeMillis();
                 sendTrendsBean.setUrl(photoUpPath);
-                upFile.upfile(imaePath,photoUpPath);
+                upFile.upfile(imaePath, photoUpPath);
             }
         }).start();
     }
@@ -146,9 +174,9 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
 
-            MyBinder myBinder = (MyBinder) service;
+            myBinder = (MyBinder) service;
             System.out.println("========== onServiceConnected");
-            myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_CREATE,sendTrendsBean);
+
 //            UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
 //            UserStateBean userStateBean = userStateDBProvider.queryUserState();
 //            String userLastMessageId = userStateBean.getUserLastMessageId();
@@ -169,7 +197,7 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
         if (state.equals("1")) {
             Toast.makeText(activity, "发布成功" + state, Toast.LENGTH_SHORT).show();
 
-        }else {
+        } else {
             Toast.makeText(activity, "发布失败", Toast.LENGTH_SHORT).show();
         }
 

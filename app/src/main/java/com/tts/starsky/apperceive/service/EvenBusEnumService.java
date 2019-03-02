@@ -14,7 +14,8 @@ public enum EvenBusEnumService {
     TRENDS_CREATE("trendsSend:createTrend", SendTrendMessageNotice.class),
     TRENDS_FLASH("trendsSync:getAllTrends", SyncTrendFlashNotice.class),
     TRENDS_LOAD("trendsSync:getload", SyncTrendLoadNotice.class),
-    TRENDS_DELETE("trendsSend:deleteTrend", SendDeleTrendNotice.class);
+    TRENDS_DELETE("trendsSend:deleteTrend", SendDeleTrendNotice.class),
+    TRENDS_UPDATE("trendsSend:updateTrend", SendDeleTrendNotice.class);
 //    TRENDS_MY_FLASH("trendsSync:getMyTrendsFlash", SyncTrendFlashNotice.class),
 //    TRENDS_MY_LOAD("trendsSync:getMyTrendsLoad", SyncTrendLoadNotice.class);
 

@@ -5,12 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,36 +20,23 @@ import com.bumptech.glide.Glide;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.TrendsListItemBean;
 import com.tts.starsky.apperceive.bean.service.SendTrendsBean;
-import com.tts.starsky.apperceive.service.EvenBusEnumService;
-import com.tts.starsky.apperceive.service.MyBinder;
-import com.tts.starsky.apperceive.view.MyActivity;
-import com.tts.starsky.apperceive.view.MyTrendsActivity;
 import com.tts.starsky.apperceive.view.OtherUserActivity;
-import com.tts.starsky.apperceive.view.fragment.MyFragment;
+import com.tts.starsky.apperceive.view.SendTrendActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
-import jp.wasabeef.glide.transformations.CropSquareTransformation;
-
 public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.ViewHolder> implements View.OnClickListener {
 
-    AdapterView.OnItemClickListener mOnItemClickListener;
     private List<TrendsListItemBean> dataList;
     private Context context;
     private int i;
-    private MyBinder myBinder;
 
     private enum HideSign {
         My, OtherUser
     }
 
-    private enum DialogSign {
-        S, F
-    }
-
-    private DialogSign dialogSign;
     private HideSign hideSign;
     private AlertDialog.Builder builder;
 
@@ -62,7 +49,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         dataList.remove(i);
     }
 
-    public TrendsListAdapter(Context mContext,List<TrendsListItemBean> dataList) {
+    public TrendsListAdapter(Context mContext, List<TrendsListItemBean> dataList) {
         this.context = mContext;
         this.dataList = dataList;
 
@@ -87,12 +74,10 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
                 SendTrendsBean sendTrendsBean = new SendTrendsBean();
                 TrendsListItemBean trendsListItemBean = getDataList().get(i);
                 sendTrendsBean.setId(trendsListItemBean.getId());
-                System.out.println("============== i: "+i );
-                System.out.println("====== dataList"+getDataList().get(i));
+                System.out.println("============== i: " + i);
+                System.out.println("====== dataList" + getDataList().get(i));
                 removeDataList(i);
-//                notifyItemRemoved(i);
                 notifyDataSetChanged();
-//                notifyItemRangeChanged(i, getDataList().size() - i);//通知数据与界面重新绑定
                 EventBus.getDefault().post(sendTrendsBean);
             }
         });
@@ -136,10 +121,6 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         hideSign = HideSign.My;
     }
 
-    public void setMyBinder(MyBinder myBinder) {
-        this.myBinder = myBinder;
-    }
-
 
     @NonNull
     @Override
@@ -152,13 +133,12 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final TrendsListAdapter.ViewHolder viewHolder, final int i) {
-//viewHolder.iv_content.setImageResource();
-//        this.i = i;
         System.out.println("[============" + i);
 
         viewHolder.tv_user_nick.setOnClickListener(this);
         viewHolder.iv_user_head_photo.setOnClickListener(this);
         viewHolder.bt_trend_my_dele.setOnClickListener(this);
+        viewHolder.bt_trend_my_update.setOnClickListener(this);
 
         viewHolder.tv_content.setText(dataList.get(i).getContent());
         System.out.println("[============" + dataList.get(i).getUrl());
@@ -175,6 +155,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         viewHolder.bt_trend_my_dele.setTag(i);
         viewHolder.tv_user_nick.setTag(i);
         viewHolder.iv_user_head_photo.setTag(i);
+        viewHolder.bt_trend_my_update.setTag(i);
 
         switch (hideSign) {
             case My:
@@ -195,19 +176,36 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
 
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()) {
+
             case R.id.tv_user_nick:
             case R.id.iv_user_head_photo:
                 i = (Integer) v.getTag();
                 Toast.makeText(context, "onClick    " + i + "    " + dataList.get(i).getSendUserId(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this.context, OtherUserActivity.class);
+                intent = new Intent(this.context, OtherUserActivity.class);
                 context.startActivity(intent);
                 break;
             case R.id.bt_trend_my_dele:
                 i = (Integer) v.getTag();
                 //    显示出该对话框
                 builder.show();
-
+                break;
+            case R.id.bt_trend_my_update:
+                System.out.println("================ bt_trend_my_update ==============");
+                i = (Integer) v.getTag();
+                TrendsListItemBean trendsListItemBean = dataList.get(i);
+                intent = new Intent();
+                //用Bundle携带数据
+                Bundle bundle = new Bundle();
+                //传递name参数为tinyphp
+                System.out.println("================= trendsListItemBean"+ trendsListItemBean.toString());
+                intent.putExtra("trendsBeanId", String.valueOf(trendsListItemBean.getId()));//设置参数
+                intent.putExtra("trendsBeanContent", trendsListItemBean.getContent());//设置参数
+                intent.putExtra("trendsBeanUrl", trendsListItemBean.getUrl());//设置参数
+                intent.setClass(context, SendTrendActivity.class);//从哪里跳到哪里
+                context.startActivity(intent);
+                break;
 //
         }
     }

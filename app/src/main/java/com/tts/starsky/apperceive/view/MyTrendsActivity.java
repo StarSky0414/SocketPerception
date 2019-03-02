@@ -61,7 +61,6 @@ public class MyTrendsActivity  extends Activity{
 
         List<TrendsListItemBean> dataList = new ArrayList<>();
         mAdapter = new TrendsListAdapter(this, dataList);
-        mAdapter.setMyBinder(myBinder);
 
         init();
 
