@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tts.starsky.apperceive">
 
 
@@ -26,12 +27,15 @@
 
 
     <application
+        android:name=".chaui.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Design.NoActionBar">
+        android:theme="@style/AppTheme"
+        tools:replace="android:theme,android:allowBackup"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".view.LoginActivity">
 
         </activity>
@@ -66,6 +70,8 @@
         <activity android:name=".view.MyTrendsActivity">
 
         </activity>
+
+        <activity android:name=".chaui.activity.ChatActivity" />
     </application>
 
 </manifest>

@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tts.starsky.apperceive.chaui.activity.ChatActivity;
 import com.tts.starsky.apperceive.db.bean.MessageListBean;
-import com.tts.starsky.apperceive.view.ChatActivity;
 
 import java.util.List;
 
