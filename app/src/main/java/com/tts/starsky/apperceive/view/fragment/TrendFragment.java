@@ -91,11 +91,13 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
 //                }, 2000);
                 SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
                 myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
+
             }
 
             @Override
             public void onLoadMore() {
-                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), String.valueOf(mAdapter.getMinId()));
+                UserStateInfo userStateInfo = new UserStateInfo();
+                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(userStateInfo.getUserId(), String.valueOf(mAdapter.getMinId()));
                 myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_LOAD, syncTrendsBean);
 
                 // 为了看效果，加了一个等待效果，正式的时候直接写mRecyclerView.loadMoreComplete();
@@ -152,6 +154,7 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
      */
     private MyBinder myBinder;
     ServiceConnection serviceConnection = new ServiceConnection() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             myBinder = (MyBinder) service;
@@ -178,7 +181,7 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
         ArrayList<TrendsListItemBean> dataList = new ArrayList<>();
         for (SendTrendsBean sendTrendsBean : sendTrendsBeanList) {
             System.out.println("sendTrendsBeanList ========== : " + sendTrendsBean.toString());
-            TrendsListItemBean trendsListItemBean = new TrendsListItemBean(sendTrendsBean.getId(),sendTrendsBean.getSendUserId(), sendTrendsBean.getContent(), "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/" + sendTrendsBean.getUrl());
+            TrendsListItemBean trendsListItemBean = new TrendsListItemBean(Integer.valueOf(sendTrendsBean.getTrendId()),sendTrendsBean.getSendUserId(), sendTrendsBean.getTrendContent(), "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/" + sendTrendsBean.getTrendPhotoUrl());
             dataList.add(trendsListItemBean);
         }
 

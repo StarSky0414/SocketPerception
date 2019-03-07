@@ -19,7 +19,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -41,13 +40,11 @@ import com.tts.starsky.apperceive.chaui.util.PictureFileUtil;
 import com.tts.starsky.apperceive.chaui.widget.MediaManager;
 import com.tts.starsky.apperceive.chaui.widget.RecordButton;
 import com.tts.starsky.apperceive.chaui.widget.StateButton;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

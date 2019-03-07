@@ -75,7 +75,6 @@ public class MyTrendsActivity  extends Activity{
      */
     private void init() {
 
-
         //======================
         //  初始化 RecyclerView
         //======================
@@ -97,16 +96,19 @@ public class MyTrendsActivity  extends Activity{
         mRecyclerView.setBackgroundColor(Color.parseColor("#acacac"));
         // 添加刷新和加载更多的监听
         mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+
             // 下拉刷新
             @Override
             public void onRefresh() {
-                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
+                UserStateInfo userStateInfo = new UserStateInfo();
+                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(userStateInfo.getUserId(), null);
                 myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
             }
 
             @Override
             public void onLoadMore() {
-                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), String.valueOf(mAdapter.getMinId()));
+                UserStateInfo userStateInfo = new UserStateInfo();
+                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(userStateInfo.getUserId(), String.valueOf(mAdapter.getMinId()));
                 myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_LOAD, syncTrendsBean);
             }
         });
@@ -147,11 +149,11 @@ public class MyTrendsActivity  extends Activity{
             myBinder = (MyBinder) service;
             mAdapter.setHideMy();
 
-
+            UserStateInfo userStateInfo = new UserStateInfo();
             // test
-            UserStateInfo.setUserId("1");
+            userStateInfo.setUserId("1");
 
-            SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
+            SyncTrendsBean syncTrendsBean = new SyncTrendsBean(userStateInfo.getUserId(), null);
             System.out.println("syncTrendsBean: ============= "+syncTrendsBean.toString());
             myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
         }
@@ -171,7 +173,7 @@ public class MyTrendsActivity  extends Activity{
         ArrayList<TrendsListItemBean> dataList = new ArrayList<>();
         for (SendTrendsBean sendTrendsBean : sendTrendsBeanList) {
             System.out.println("sendTrendsBeanList ========== : " + sendTrendsBean.toString());
-            TrendsListItemBean trendsListItemBean = new TrendsListItemBean(sendTrendsBean.getId(),sendTrendsBean.getSendUserId(), sendTrendsBean.getContent(), "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/" + sendTrendsBean.getUrl());
+            TrendsListItemBean trendsListItemBean = new TrendsListItemBean(Integer.valueOf(sendTrendsBean.getTrendId()),sendTrendsBean.getSendUserId(), sendTrendsBean.getTrendContent(), "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/" + sendTrendsBean.getTrendPhotoUrl());
             dataList.add(trendsListItemBean);
         }
 

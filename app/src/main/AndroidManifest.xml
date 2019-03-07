@@ -27,6 +27,7 @@
 
 
     <application
+        android:debuggable="true"
         android:name=".chaui.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -35,7 +36,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:theme,android:allowBackup"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning,HardcodedDebugMode">
         <activity android:name=".view.LoginActivity">
 
         </activity>
@@ -47,11 +48,7 @@
         </activity>
 
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service android:name=".service.MyService"/>
@@ -65,13 +62,18 @@
 
         </activity>
         <activity android:name=".view.TestActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".view.MyTrendsActivity">
 
         </activity>
 
         <activity android:name=".chaui.activity.ChatActivity" />
+
     </application>
 
 </manifest>

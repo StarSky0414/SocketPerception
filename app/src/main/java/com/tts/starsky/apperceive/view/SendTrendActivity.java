@@ -28,6 +28,7 @@ import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.bean.evenbus.callbackbean.SendTrendCreateBean;
 import com.tts.starsky.apperceive.bean.service.SendTrendsBean;
 import com.tts.starsky.apperceive.db.bean.UserBean;
+import com.tts.starsky.apperceive.db.bean.UserStateBean;
 import com.tts.starsky.apperceive.oss.OSSConfig;
 import com.tts.starsky.apperceive.oss.UpFile;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
@@ -62,6 +63,10 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intentServer = new Intent(this, MyService.class);
+        UserStateInfo userStateInfo = new UserStateInfo();
+        System.out.println("SendTrendActivity getsession: " + userStateInfo.getClientSession());
+
+
         bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
         setContentView(R.layout.active_send_trend);
         sendTrendsBean = new SendTrendsBean();
@@ -77,13 +82,13 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
 
         Intent intent = getIntent();
         String trendsBeanId = intent.getStringExtra("trendsBeanId");
-
-        if (trendsBeanId != null && trendsBeanId.equals("")) {
-            System.out.println("=================trendsBeanId "+trendsBeanId);
+        Toast.makeText(activity, "trendsBeanId" + trendsBeanId, Toast.LENGTH_SHORT).show();
+        if (trendsBeanId != null && !trendsBeanId.equals("")) {
+            System.out.println("=================trendsBeanId " + trendsBeanId);
             String trendsBeanContent = intent.getStringExtra("trendsBeanContent");
             String trendsBeanUrl = intent.getStringExtra("trendsBeanUrl");
-            sendTrendsBean.setId(Integer.valueOf(trendsBeanId));
-            System.out.println("=================trendsBeanContent "+trendsBeanContent);
+            sendTrendsBean.setTrendId(trendsBeanId);
+            System.out.println("=================trendsBeanContent " + trendsBeanContent);
             et_send_trend.setText(trendsBeanContent);
             Glide.with(this).
                     load(trendsBeanUrl).
@@ -120,14 +125,15 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
                 break;
             case R.id.bt_send_context:
                 String trendContext = et_send_trend.getText().toString();
-                sendTrendsBean.setContent(trendContext);
-                sendTrendsBean.setSendUserId(UserStateInfo.getUserId());
-                System.out.println("===============" + sendTrendsBean.toString());
+                sendTrendsBean.setTrendContent(trendContext);
+                UserStateInfo userStateInfo = new UserStateInfo();
+                sendTrendsBean.setSendUserId(userStateInfo.getUserId());
+                System.out.println("sendTrendsBean.toString() ===============" + sendTrendsBean.toString());
                 Toast.makeText(this, "hhh" + trendContext, Toast.LENGTH_SHORT).show();
 
-                if (sendTrendsBean.getId() != 0){
+                if (sendTrendsBean.getTrendId() != null && !sendTrendsBean.getTrendId().equals("")) {
                     myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_UPDATE, sendTrendsBean);
-                }else {
+                } else {
 
                     myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_CREATE, sendTrendsBean);
                 }
@@ -162,8 +168,9 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
             @Override
             public void run() {
                 UpFile upFile = new UpFile();
-                String photoUpPath = OSSConfig.upRootPath + "trend/" + UserStateInfo.getUserId() + "/" + System.currentTimeMillis();
-                sendTrendsBean.setUrl(photoUpPath);
+                UserStateInfo userStateInfo = new UserStateInfo();
+                String photoUpPath = OSSConfig.upRootPath + "trend/" + userStateInfo.getUserId() + "/" + System.currentTimeMillis();
+                sendTrendsBean.setTrendPhotoUrl(photoUpPath);
                 upFile.upfile(imaePath, photoUpPath);
             }
         }).start();

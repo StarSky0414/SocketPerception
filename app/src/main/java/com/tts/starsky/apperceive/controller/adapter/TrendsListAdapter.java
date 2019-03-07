@@ -73,7 +73,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
                 Toast.makeText(context, "positive: " + i, Toast.LENGTH_SHORT).show();
                 SendTrendsBean sendTrendsBean = new SendTrendsBean();
                 TrendsListItemBean trendsListItemBean = getDataList().get(i);
-                sendTrendsBean.setId(trendsListItemBean.getId());
+                sendTrendsBean.setTrendId(String.valueOf(trendsListItemBean.getId()));
                 System.out.println("============== i: " + i);
                 System.out.println("====== dataList" + getDataList().get(i));
                 removeDataList(i);

@@ -1,33 +1,74 @@
 package com.tts.starsky.apperceive.bean.service;
 
+
+/**
+ * 动态实体类
+ */
 public class SendTrendsBean implements SeviceBean {
 
-    // 动态id
-    private int id ;
     // 发送用户id
     private String sendUserId;
+    // 用户头像
+    private String headPhotoUrl;
+    //用户昵称
+    private String userNickName;
+    // 动态图片
+    private String trendPhotoUrl;
+    // 动态id
+    private String trendId;
     // 动态内容
-    private String content;
-    // 动态图片网址
-    private String url;
+    private String trendContent;
+    // 动态创建时间
+    private String trendCreateTime;
+    // 喜欢数量
+    private String likeNumber;
 
-    public SendTrendsBean(String sendUserId, String content, String url) {
+    /**
+     * 客户端提交使用
+     *
+     * @param sendUserId    发送者id
+     * @param trendPhotoUrl 动态图片
+     * @param trendContent  动态内容
+     */
+    public SendTrendsBean(String sendUserId, String trendPhotoUrl, String trendContent) {
         this.sendUserId = sendUserId;
-        this.content = content;
-        this.url = url;
+        this.trendPhotoUrl = trendPhotoUrl;
+        this.trendContent = trendContent;
     }
 
-    public SendTrendsBean(){
-
+    /**
+     * 服务端返回使用
+     *
+     * @param sendUserId      发送者id
+     * @param headPhotoUrl    发送者头像图片
+     * @param userNickName    发送者昵称
+     * @param trendPhotoUrl   动态图片网址
+     * @param trendId         动态图片id
+     * @param trendContent    动态图片内容
+     * @param trendCreateTime 动态图片创建时间
+     * @param likeNumber      喜欢数量
+     */
+    public SendTrendsBean(String sendUserId, String headPhotoUrl, String userNickName, String trendPhotoUrl, String trendId, String trendContent, String trendCreateTime, String likeNumber) {
+        this.sendUserId = sendUserId;
+        this.headPhotoUrl = headPhotoUrl;
+        this.userNickName = userNickName;
+        this.trendPhotoUrl = trendPhotoUrl;
+        this.trendId = trendId;
+        this.trendContent = trendContent;
+        this.trendCreateTime = trendCreateTime;
+        this.likeNumber = likeNumber;
     }
 
-    public int getId() {
-        return id;
+    /**
+     * 空构造器
+     */
+    public SendTrendsBean() {
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    //==============================
+    // get,set 方法
+    //==============================
+
 
     public String getSendUserId() {
         return sendUserId;
@@ -37,29 +78,74 @@ public class SendTrendsBean implements SeviceBean {
         this.sendUserId = sendUserId;
     }
 
-    public String getContent() {
-        return content;
+    public String getHeadPhotoUrl() {
+        return headPhotoUrl;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setHeadPhotoUrl(String headPhotoUrl) {
+        this.headPhotoUrl = headPhotoUrl;
     }
 
-    public String getUrl() {
-        return url;
+    public String getUserNickName() {
+        return userNickName;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUserNickName(String userNickName) {
+        this.userNickName = userNickName;
+    }
+
+    public String getTrendPhotoUrl() {
+        return trendPhotoUrl;
+    }
+
+    public void setTrendPhotoUrl(String trendPhotoUrl) {
+        this.trendPhotoUrl = trendPhotoUrl;
+    }
+
+    public String getTrendId() {
+        return trendId;
+    }
+
+    public void setTrendId(String trendId) {
+        this.trendId = trendId;
+    }
+
+    public String getTrendContent() {
+        return trendContent;
+    }
+
+    public void setTrendContent(String trendContent) {
+        this.trendContent = trendContent;
+    }
+
+    public String getTrendCreateTime() {
+        return trendCreateTime;
+    }
+
+    public void setTrendCreateTime(String trendCreateTime) {
+        this.trendCreateTime = trendCreateTime;
+    }
+
+    public String getLikeNumber() {
+        return likeNumber;
+    }
+
+    public void setLikeNumber(String likeNumber) {
+        this.likeNumber = likeNumber;
     }
 
     @Override
     public String toString() {
         return "SendTrendsBean{" +
-                "id='" + id + '\'' +
-                ", sendUserId='" + sendUserId + '\'' +
-                ", content='" + content + '\'' +
-                ", url='" + url + '\'' +
+                "sendUserId='" + sendUserId + '\'' +
+                ", headPhotoUrl='" + headPhotoUrl + '\'' +
+                ", userNickName='" + userNickName + '\'' +
+                ", trendPhotoUrl='" + trendPhotoUrl + '\'' +
+                ", trendId='" + trendId + '\'' +
+                ", trendContent='" + trendContent + '\'' +
+                ", trendCreateTime='" + trendCreateTime + '\'' +
+                ", likeNumber='" + likeNumber + '\'' +
                 '}';
     }
 }
+

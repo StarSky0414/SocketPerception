@@ -1,6 +1,9 @@
 package com.tts.starsky.apperceive.service;
 
+import android.content.Context;
 import android.os.Binder;
+
+import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.bean.service.SeviceBean;
 import com.tts.starsky.apperceive.controller.MessageSend;
 import java.io.IOException;
@@ -33,7 +36,7 @@ public class MyBinder extends Binder {
     /**
      * 适配器异常集中处理
      */
-    public void adapterExceptionDispose(EvenBusEnumService evenBusEnumService,SeviceBean seviceBean) {
+    public void adapterExceptionDispose(EvenBusEnumService evenBusEnumService, SeviceBean seviceBean) {
         try {
             adapter(evenBusEnumService,seviceBean);
         } catch (InterruptedException e) {

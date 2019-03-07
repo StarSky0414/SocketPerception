@@ -1,8 +1,10 @@
 package com.tts.starsky.apperceive.controller;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.bean.service.SeviceBean;
 import com.tts.starsky.apperceive.bean.tometeor.AdapterRequestBean;
 import com.tts.starsky.apperceive.service.callback.IMyCallBack;
@@ -18,12 +20,13 @@ public class MessageSend implements Runnable{
     private String jsonString;
 
 //    private static String hostAddress="192.168.1.108";
-    private static String hostAddress="120.25.96.141";
+//    private static String hostAddress="120.25.96.141";
 //    private static String hostAddress="192.168.43.212";
+    private static String hostAddress="172.20.7.59";
+//    private static String hostAddress="192.168.42.6";
     private static final int port=8090;
 
-    private static final String tempSession = "2c6ca101c9684cf2a1f243e84679dfe8";
-
+    private static final String tempSession = "e17e7ddee0804859af9d3787345a405b";
     public MessageSend(String pathString, SeviceBean seviceBean, IMyCallBack iMyCallBack) {
         this.pathString=pathString;
         this.iMyCallBack=iMyCallBack;
@@ -45,7 +48,9 @@ public class MessageSend implements Runnable{
 
         byte[] packLengthByte = Conversion.intToByteArray(packLength);
         byte[] pathLengthByte = Conversion.intToByteArray(pathLength);
-        dataOutputStream.write(tempSession.getBytes());
+        UserStateInfo userStateInfo = new UserStateInfo();
+        System.out.println("============UserStateInfo.getClientSession().getBytes() : "+userStateInfo.getClientSession());
+        dataOutputStream.write(userStateInfo.getClientSession().getBytes());
         dataOutputStream.write(pathLengthByte);
         dataOutputStream.write(pathStringBytes);
         dataOutputStream.write(packLengthByte);
@@ -56,9 +61,11 @@ public class MessageSend implements Runnable{
         byte[] sessionByte = new byte[32];
         InputStream inputStream = socket.getInputStream();
         inputStream.read(sessionByte);
-
         String s = new String(sessionByte);
-        System.out.println("================s："+s);
+        userStateInfo.setClientSession(s);
+
+
+        System.out.println("================UserStateInfo.getClientSession()："+userStateInfo.getClientSession());
         Distribute distribute = new Distribute();
         AdapterRequestBean adapterRequestBean = distribute.resolvePackage(inputStream);
         String requestJsonString = adapterRequestBean.getJsonString();
