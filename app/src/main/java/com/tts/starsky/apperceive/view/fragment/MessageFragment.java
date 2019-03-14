@@ -11,13 +11,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.evenbus.RequestNewMessageList;
 import com.tts.starsky.apperceive.bean.evenbus.UpdateMessageListBean;
+import com.tts.starsky.apperceive.bean.evenbus.callbackbean.MessageUpdateSign;
 import com.tts.starsky.apperceive.controller.adapter.MessageListAdapter;
+import com.tts.starsky.apperceive.db.DBBase;
+import com.tts.starsky.apperceive.db.bao.DaoSession;
+import com.tts.starsky.apperceive.db.bao.MessageBeanDao;
 import com.tts.starsky.apperceive.db.bean.MessageListBean;
+import com.tts.starsky.apperceive.db.provider.MessageListDBProvider;
+import com.tts.starsky.apperceive.exception.DBException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,6 +37,7 @@ import java.util.List;
 public class MessageFragment extends Fragment {
 
     private List<MessageListBean> dataList;
+    private DaoSession dbSession;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static MessageFragment newInstance() {
@@ -37,7 +46,7 @@ public class MessageFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void update(){
+    private void update() {
         // XRecyclerView的使用，和RecyclerView几乎一致
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -90,39 +99,77 @@ public class MessageFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View inflate = inflater.inflate(R.layout.fragment_chat_list, container, false);
-        mRecyclerView=(XRecyclerView)inflate.findViewById(R.id.recyclerview);
+        mRecyclerView = (XRecyclerView) inflate.findViewById(R.id.recyclerview);
 
-//        dataList = new MessageListDBProvider().queryMessageList();
-        MessageListBean messageListBean = new MessageListBean("1",1,"hahah","aa","2019-02-12 19:51:31",4);
-        List<MessageListBean> messageListBeans = new ArrayList<>();
-        messageListBeans.add(messageListBean);
-        messageListBeans.add(messageListBean);
-        messageListBeans.add(messageListBean);
-        dataList = messageListBeans;
+        try {
+            dbSession = DBBase.getDBBase().getDBSession();
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
+
+
+        dataList = new MessageListDBProvider().queryMessageList();
+//        MessageListBean messageListBean = new MessageListBean("1", "1", "hahah", "aa", "2019-02-12 19:51:31", 4);
+//        List<MessageListBean> messageListBeans = new ArrayList<>();
+//        messageListBeans.add(messageListBean);
+//        messageListBeans.add(messageListBean);
+//        messageListBeans.add(messageListBean);
+//        dataList = messageListBeans;
         mAdapter = new MessageListAdapter(getContext(), dataList);
 
         update();
         EventBus.getDefault().register(this);
-        EventBus.getDefault().post( new RequestNewMessageList());
+        EventBus.getDefault().post(new RequestNewMessageList());
+
+//        updateMessageList();
         return inflate;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    @Subscribe(threadMode = ThreadMode.MAIN )
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(UpdateMessageListBean updateMessageListBean) {
 
         dataList = updateMessageListBean.getMessageListBeanList();
 //        Toast.makeText(this, "aaaaa", Toast.LENGTH_SHORT).show();
 //        update();
         mAdapter.changeData(dataList);
-        Log.w("========","run Trends");
+        Log.w("========", "run Trends");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(EventBus.getDefault().isRegistered(this)) {
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
     }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(MessageUpdateSign sendToSever) {
+        DaoSession dbSession = null;
+        try {
+            dbSession = DBBase.getDBBase().getDBSession();
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
+        long count = dbSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Readed.eq(0)).count();
+        Toast.makeText(getContext(), "有新消息CCCCC" + count, Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateMessageList() {
+        dataList = new MessageListDBProvider().queryMessageList();
+//        System.out.println("=====================dataList.size() " + dataList.size());
+//        System.out.println("=====================dataList.get(0) " + dataList.get(0));
+        mAdapter.changeData(dataList);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateMessageList();
+//        mAdapter.notifyDataSetChanged();
+    }
+
 }

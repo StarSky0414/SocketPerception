@@ -11,12 +11,14 @@ import org.greenrobot.greendao.internal.DaoConfig;
 import com.tts.starsky.apperceive.db.bean.chatMessage;
 import com.tts.starsky.apperceive.db.bean.MessageBean;
 import com.tts.starsky.apperceive.db.bean.UserBean;
+import com.tts.starsky.apperceive.db.bean.UserInfoBean;
 import com.tts.starsky.apperceive.db.bean.UserSelfBean;
 import com.tts.starsky.apperceive.db.bean.UserStateBean;
 
 import com.tts.starsky.apperceive.db.bao.chatMessageDao;
 import com.tts.starsky.apperceive.db.bao.MessageBeanDao;
 import com.tts.starsky.apperceive.db.bao.UserBeanDao;
+import com.tts.starsky.apperceive.db.bao.UserInfoBeanDao;
 import com.tts.starsky.apperceive.db.bao.UserSelfBeanDao;
 import com.tts.starsky.apperceive.db.bao.UserStateBeanDao;
 
@@ -32,12 +34,14 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig chatMessageDaoConfig;
     private final DaoConfig messageBeanDaoConfig;
     private final DaoConfig userBeanDaoConfig;
+    private final DaoConfig userInfoBeanDaoConfig;
     private final DaoConfig userSelfBeanDaoConfig;
     private final DaoConfig userStateBeanDaoConfig;
 
     private final chatMessageDao chatMessageDao;
     private final MessageBeanDao messageBeanDao;
     private final UserBeanDao userBeanDao;
+    private final UserInfoBeanDao userInfoBeanDao;
     private final UserSelfBeanDao userSelfBeanDao;
     private final UserStateBeanDao userStateBeanDao;
 
@@ -54,6 +58,9 @@ public class DaoSession extends AbstractDaoSession {
         userBeanDaoConfig = daoConfigMap.get(UserBeanDao.class).clone();
         userBeanDaoConfig.initIdentityScope(type);
 
+        userInfoBeanDaoConfig = daoConfigMap.get(UserInfoBeanDao.class).clone();
+        userInfoBeanDaoConfig.initIdentityScope(type);
+
         userSelfBeanDaoConfig = daoConfigMap.get(UserSelfBeanDao.class).clone();
         userSelfBeanDaoConfig.initIdentityScope(type);
 
@@ -63,12 +70,14 @@ public class DaoSession extends AbstractDaoSession {
         chatMessageDao = new chatMessageDao(chatMessageDaoConfig, this);
         messageBeanDao = new MessageBeanDao(messageBeanDaoConfig, this);
         userBeanDao = new UserBeanDao(userBeanDaoConfig, this);
+        userInfoBeanDao = new UserInfoBeanDao(userInfoBeanDaoConfig, this);
         userSelfBeanDao = new UserSelfBeanDao(userSelfBeanDaoConfig, this);
         userStateBeanDao = new UserStateBeanDao(userStateBeanDaoConfig, this);
 
         registerDao(chatMessage.class, chatMessageDao);
         registerDao(MessageBean.class, messageBeanDao);
         registerDao(UserBean.class, userBeanDao);
+        registerDao(UserInfoBean.class, userInfoBeanDao);
         registerDao(UserSelfBean.class, userSelfBeanDao);
         registerDao(UserStateBean.class, userStateBeanDao);
     }
@@ -77,6 +86,7 @@ public class DaoSession extends AbstractDaoSession {
         chatMessageDaoConfig.clearIdentityScope();
         messageBeanDaoConfig.clearIdentityScope();
         userBeanDaoConfig.clearIdentityScope();
+        userInfoBeanDaoConfig.clearIdentityScope();
         userSelfBeanDaoConfig.clearIdentityScope();
         userStateBeanDaoConfig.clearIdentityScope();
     }
@@ -91,6 +101,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public UserBeanDao getUserBeanDao() {
         return userBeanDao;
+    }
+
+    public UserInfoBeanDao getUserInfoBeanDao() {
+        return userInfoBeanDao;
     }
 
     public UserSelfBeanDao getUserSelfBeanDao() {

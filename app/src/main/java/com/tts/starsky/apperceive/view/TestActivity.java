@@ -170,15 +170,23 @@ import android.widget.Toast;
 import com.tts.starsky.apperceive.MainActivity;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
+import com.tts.starsky.apperceive.bean.evenbus.callbackbean.MessageUpdateSign;
 import com.tts.starsky.apperceive.bean.service.SyncMessageRequestBean;
 import com.tts.starsky.apperceive.bean.service.SyncTrendsBean;
 import com.tts.starsky.apperceive.db.DBBase;
+import com.tts.starsky.apperceive.db.bao.DaoSession;
+import com.tts.starsky.apperceive.db.bao.MessageBeanDao;
+import com.tts.starsky.apperceive.exception.DBException;
 import com.tts.starsky.apperceive.oss.InitOssClient;
 import com.tts.starsky.apperceive.oss.OSSConfig;
 import com.tts.starsky.apperceive.oss.UpFile;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
 import com.tts.starsky.apperceive.service.MyBinder;
 import com.tts.starsky.apperceive.service.MyService;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -189,57 +197,32 @@ import java.util.Enumeration;
 public class TestActivity extends Activity implements View.OnClickListener {
 
 
-    private AlertDialog.Builder builder;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trends_item);
 
-        init();
+//        init();
 
     }
 
-    /**
-     * 初始化界面
-     */
-    private void init() {
-        Intent intentServer = new Intent(this, MyService.class);
-        bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
+
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(MessageUpdateSign sendToSever) {
+        DaoSession dbSession =null;
+        try {
+            dbSession= DBBase.getDBBase().getDBSession();
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
+        long count = dbSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Readed.eq(0)).count();
+        Toast.makeText(this, "有新消息"+count, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bt_trend_my_dele:
-                //    显示出该对话框
-                builder.show();
-                break;
-        }
 
     }
-
-
-
-    /**
-     *   服务调用
-     */
-    private MyBinder myBinder;
-    ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (MyBinder) service;
-
-            UserStateInfo userStateInfo = new UserStateInfo();
-
-            SyncMessageRequestBean syncMessageRequestBean = new SyncMessageRequestBean(userStateInfo.getUserId(),"5");
-            System.out.println("syncTrendsBean: ============= "+syncMessageRequestBean.toString());
-            myBinder.adapterExceptionDispose(EvenBusEnumService.SYNC_MESSAGE, syncMessageRequestBean);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
 }

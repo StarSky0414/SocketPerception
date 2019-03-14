@@ -24,6 +24,7 @@ public class DaoMaster extends AbstractDaoMaster {
         chatMessageDao.createTable(db, ifNotExists);
         MessageBeanDao.createTable(db, ifNotExists);
         UserBeanDao.createTable(db, ifNotExists);
+        UserInfoBeanDao.createTable(db, ifNotExists);
         UserSelfBeanDao.createTable(db, ifNotExists);
         UserStateBeanDao.createTable(db, ifNotExists);
     }
@@ -33,6 +34,7 @@ public class DaoMaster extends AbstractDaoMaster {
         chatMessageDao.dropTable(db, ifExists);
         MessageBeanDao.dropTable(db, ifExists);
         UserBeanDao.dropTable(db, ifExists);
+        UserInfoBeanDao.dropTable(db, ifExists);
         UserSelfBeanDao.dropTable(db, ifExists);
         UserStateBeanDao.dropTable(db, ifExists);
     }
@@ -56,6 +58,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(chatMessageDao.class);
         registerDaoClass(MessageBeanDao.class);
         registerDaoClass(UserBeanDao.class);
+        registerDaoClass(UserInfoBeanDao.class);
         registerDaoClass(UserSelfBeanDao.class);
         registerDaoClass(UserStateBeanDao.class);
     }

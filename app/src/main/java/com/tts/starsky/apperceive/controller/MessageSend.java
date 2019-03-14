@@ -20,10 +20,10 @@ public class MessageSend implements Runnable{
     private String jsonString;
 
 //    private static String hostAddress="192.168.1.108";
-//    private static String hostAddress="120.25.96.141";
+    private static String hostAddress="120.25.96.141";
 //    private static String hostAddress="192.168.43.212";
-    private static String hostAddress="172.20.7.59";
-//    private static String hostAddress="192.168.42.6";
+//    private static String hostAddress="172.20.7.59";
+//    private static String hostAddress="192.168.43.212";
     private static final int port=8090;
 
     private static final String tempSession = "e17e7ddee0804859af9d3787345a405b";

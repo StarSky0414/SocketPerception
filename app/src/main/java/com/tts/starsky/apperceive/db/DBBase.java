@@ -7,6 +7,7 @@ import com.tts.starsky.apperceive.db.bao.DaoSession;
 import com.tts.starsky.apperceive.exception.DBException;
 
 import org.greenrobot.greendao.database.Database;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 public class DBBase {
 
@@ -25,7 +26,11 @@ public class DBBase {
      */
     public static void dbBaseinit(Context context){
         DBBase.context = context;
+        QueryBuilder.LOG_SQL = true;
+        QueryBuilder.LOG_VALUES = true;
         dbBase=new DBBase();
+//        MigrationHelper.DEBUG = true;//如果查看数据库更新的Log，请设置为true
+
     }
 
     /**

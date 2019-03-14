@@ -9,9 +9,6 @@ public enum MsgType {
     VIDEO ,//视频消息
     IMAGE ,//图片消息
     FILE ,//文件消息
-    LOCATION //位置消息
-
-
-
-
+    LOCATION, //位置消息
+    FOLLOW
 }

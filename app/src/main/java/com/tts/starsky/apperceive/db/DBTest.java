@@ -34,7 +34,7 @@ public class DBTest {
 //        userBeanDao.insert(new UserBean(null, "张三", "123"));
 //
         MessageBeanDao messageBeanDao = daoSession.getMessageBeanDao();
-        messageBeanDao.insert(new MessageBean(null, "1","2","1", "反方向数据", "11:50","", 0));
+//        messageBeanDao.insert(new MessageBean(null, "1","2","1", "反方向数据", "11:50","", 0));
 /*        messageBeanDao.insert(new MessageBean(null, "2","1","1", "数据库测试数据", "11:20","", 1));
         messageBeanDao.insert(new MessageBean(null, "2","1","2", "数据库测试数据", "11:30","", 0));
         messageBeanDao.insert(new MessageBean(null, "2","1", "2","数据库测试数据", "11:20","", 0));

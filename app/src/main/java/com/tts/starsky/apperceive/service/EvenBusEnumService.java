@@ -9,7 +9,7 @@ import com.tts.starsky.apperceive.service.callback.SyncTrendLoadNotice;
 import com.tts.starsky.apperceive.service.callback.newMessageNotice;
 
 public enum EvenBusEnumService {
-    SYNC_MESSAGE("SyncMessage:getMessage", SendMessageNotice.class),
+    SYNC_MESSAGE("syncMessage:getMessage", SendMessageNotice.class),
     //    SYNC_MESSAGE("requestNewMessageList",newMessageNotice.class);
     TRENDS_CREATE("trendsSend:createTrend", SendTrendMessageNotice.class),
     TRENDS_FLASH("trendsSync:getAllTrends", SyncTrendFlashNotice.class),

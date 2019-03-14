@@ -1,5 +1,7 @@
 package com.tts.starsky.apperceive.db.bean;
 
+import com.tts.starsky.apperceive.bean.json.request.MessgaeTypeEnum;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
@@ -23,12 +25,13 @@ public class MessageBean {
     //时间
     private String voiceTime;
     //未读消息标记
-    private int readed;
-
-    @Generated(hash = 517141050)
+    private String readed;
+    //消息类型
+    int messageType;
+    @Generated(hash = 1165629017)
     public MessageBean(Long messageId, String sendUserId, String receiveUserId,
             String otherUserId, String MessageContext, String Time,
-            String voiceTime, int readed) {
+            String voiceTime, String readed, int messageType) {
         this.messageId = messageId;
         this.sendUserId = sendUserId;
         this.receiveUserId = receiveUserId;
@@ -37,6 +40,7 @@ public class MessageBean {
         this.Time = Time;
         this.voiceTime = voiceTime;
         this.readed = readed;
+        this.messageType = messageType;
     }
     @Generated(hash = 1588632019)
     public MessageBean() {
@@ -83,24 +87,16 @@ public class MessageBean {
     public void setVoiceTime(String voiceTime) {
         this.voiceTime = voiceTime;
     }
-    public int getReaded() {
+    public String getReaded() {
         return this.readed;
     }
-    public void setReaded(int readed) {
+    public void setReaded(String readed) {
         this.readed = readed;
     }
-
-    @Override
-    public String toString() {
-        return "MessageBean{" +
-                "messageId=" + messageId +
-                ", sendUserId='" + sendUserId + '\'' +
-                ", receiveUserId='" + receiveUserId + '\'' +
-                ", otherUserId='" + otherUserId + '\'' +
-                ", MessageContext='" + MessageContext + '\'' +
-                ", Time='" + Time + '\'' +
-                ", voiceTime='" + voiceTime + '\'' +
-                ", readed=" + readed +
-                '}';
+    public int getMessageType() {
+        return this.messageType;
+    }
+    public void setMessageType(int messageType) {
+        this.messageType = messageType;
     }
 }

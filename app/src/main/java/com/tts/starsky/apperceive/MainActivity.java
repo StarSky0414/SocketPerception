@@ -17,7 +17,12 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.TextBadgeItem;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
+import com.tts.starsky.apperceive.bean.evenbus.callbackbean.MessageUpdateSign;
+import com.tts.starsky.apperceive.db.DBBase;
+import com.tts.starsky.apperceive.db.bao.DaoSession;
+import com.tts.starsky.apperceive.db.bao.MessageBeanDao;
 import com.tts.starsky.apperceive.db.bean.UserStateBean;
+import com.tts.starsky.apperceive.exception.DBException;
 import com.tts.starsky.apperceive.oss.InitOssClient;
 import com.tts.starsky.apperceive.oss.OSSConfig;
 import com.tts.starsky.apperceive.view.fragment.MyFragment;
@@ -25,6 +30,7 @@ import com.tts.starsky.apperceive.view.fragment.MessageFragment;
 import com.tts.starsky.apperceive.view.fragment.TrendFragment;
 import com.tts.starsky.apperceive.view.fragment.UnderButtonState;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -70,6 +76,7 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
         InitOssClient.initOssClient(this,OSSConfig.stsServer,OSSConfig.endPoint);
         UserStateInfo userStateInfo = new UserStateInfo();
         userStateInfo.setUserId("1");
+        EventBus.getDefault().register(this);
 //        DBBase.dbBaseinit(this);
 //        EventBus.getDefault().register(this);
 //        Intent serviceIntent = new Intent(MainActivity.this, MessageService.class);
@@ -224,10 +231,18 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
         Log.w("========", "run");
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void Event(SendToSever sendToSever) {
-//        System.out.println("================="+sendToSever.toString());
-//    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(MessageUpdateSign sendToSever) {
+        DaoSession dbSession =null;
+        try {
+             dbSession= DBBase.getDBBase().getDBSession();
+        } catch (DBException e) {
+            e.printStackTrace();
+        }
+        long count = dbSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Readed.eq(0)).count();
+        Toast.makeText(this, "有新消息"+count, Toast.LENGTH_SHORT).show();
+        numberBadge.setText(String.valueOf(count));
+    }
 
 
 

@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.tts.starsky.apperceive.chaui.activity.ChatActivity;
 import com.tts.starsky.apperceive.db.bean.MessageListBean;
+import com.tts.starsky.apperceive.db.provider.MessageListDBProvider;
 
 import java.util.List;
 
@@ -24,9 +25,18 @@ public class MessageListOnClickListener implements View.OnClickListener, View.On
         Intent intent = new Intent(v.getContext(),ChatActivity.class);
         MessageListBean messageListBean = dataList.get(i);
         String userId = messageListBean.getUserId();
+        String headPhoto = messageListBean.getHeadPhoto();
+        String userNickName = messageListBean.getUserNickName();
         System.out.println("==============="+userId);
+
+        MessageListDBProvider messageListDBProvider = new MessageListDBProvider();
+        messageListDBProvider.updateUserUnreadedMessageNum(userId);
+
         intent.putExtra("userId",userId);
+        intent.putExtra("headPhoto",headPhoto);
+        intent.putExtra("userNickName",userNickName);
         v.getContext().startActivity(intent);
+
     }
 
     @Override

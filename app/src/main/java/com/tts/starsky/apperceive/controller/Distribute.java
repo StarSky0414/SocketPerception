@@ -25,12 +25,42 @@ public class Distribute {
         int i = Integer.valueOf(new String(packLengthByte));
         byte[] messageBodyByte = new byte[i];
         //读取数据json
-        int read = dataInputStream.read(messageBodyByte);
+//        int read = dataInputStream.read(messageBodyByte);
 
-        String jsonString = new String(messageBodyByte);
+
+        //======================
+        //  更新读取方式
+        //======================
+
+        byte[] bytesTemp = new byte[1000];
+        StringBuffer jsonStringBuff = new StringBuffer();
+        int longBytesTemp;
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String jsonString = bufferedReader.readLine();
+//        while ((longBytesTemp= dataInputStream.read(bytesTemp))!=-1){
+//
+//
+////            i-=(longBytesTemp= dataInputStream.read(bytesTemp));
+//            String s = new String(bytesTemp, "utf-8");
+//            System.out.println("=======! s"+s);
+//            jsonStringBuff.append(s);
+//            System.out.println("!=========read : "+longBytesTemp);
+////            if (i<=0){
+////                i-=(longBytesTemp= dataInputStream.read(bytesTemp));
+////                jsonStringBuff.append(new String(bytesTemp));
+////                break;
+////            }
+//        }
+//        String jsonString = new String(jsonStringBuff);
+
+        if (jsonString.length()==0){
+            return  new AdapterRequestBean("{}");
+        }
+//        String jsonString = new String(messageBodyByte);
         AdapterRequestBean adapterRequestBean = new AdapterRequestBean(jsonString);
         System.out.println("========================"+i);
-        System.out.println("========================"+read);
+//        System.out.println("========================"+read);
         System.out.println("========================"+jsonString);
         return adapterRequestBean;
     }

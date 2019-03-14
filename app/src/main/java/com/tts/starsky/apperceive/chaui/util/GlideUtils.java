@@ -33,8 +33,8 @@ public class GlideUtils {
 					public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
 						ImageSize imageSize = BitmapUtil.getImageSize(((BitmapDrawable)resource).getBitmap() );
 						RelativeLayout.LayoutParams imageLP =(RelativeLayout.LayoutParams )(imageView.getLayoutParams());
-						imageLP.width = imageSize.getWidth();
-						imageLP.height = imageSize.getHeight();
+//						imageLP.width = imageSize.getWidth();
+//						imageLP.height = imageSize.getHeight();
 						imageView.setLayoutParams(imageLP);
 
 						Glide.with(mContext)

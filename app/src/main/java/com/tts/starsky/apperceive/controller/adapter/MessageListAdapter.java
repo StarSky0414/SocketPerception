@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.controller.listonclicklistener.MessageListOnClickListener;
 import com.tts.starsky.apperceive.db.bean.MessageListBean;
@@ -58,30 +59,35 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 ////                Toast.makeText(context,"点击了我"+dataList.get(i).getTime(), Toast.LENGTH_SHORT).show();
 ////            }
 ////        });
+        Glide.with(context).
+                load(dataList.get(i).getHeadPhoto()).
+                into(viewHolder.iv_image);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MessageListAdapter.ViewHolder viewHolder, final int i) {
         System.out.println(viewHolder.getItemId());
-        viewHolder.iv_image.setImageResource(R.mipmap.ic_launcher_round);
+        Glide.with(context).
+                load(dataList.get(i).getHeadPhoto()).
+                into(viewHolder.iv_image);
         viewHolder.tv_context.setText(dataList.get(i).getNewMessage());
         viewHolder.tv_fruit.setText(dataList.get(i).getUserNickName());
-        if (dataList.get(i).getUnreadMessageNumber()!=0) {
+        if (dataList.get(i).getUnreadMessageNumber() != 0) {
             viewHolder.tv_zt.setText(String.valueOf(dataList.get(i).getUnreadMessageNumber()));
             viewHolder.tv_zt.setBackground(context.getResources().getDrawable(R.drawable.reccler_new_message));
-        }else {
+        } else {
             viewHolder.tv_zt.setText(null);
             viewHolder.tv_zt.setBackgroundColor(Color.parseColor("#00ffffff"));
         }
-        viewHolder.tv_time.setText(dataList.get(i).getTime().substring(10,19));
+        viewHolder.tv_time.setText(dataList.get(i).getTime().substring(10, 19));
         System.out.println(i);
 
 
 //        if (mOnItemClickListener != null) {
-            MessageListOnClickListener messageListOnClickListener = new MessageListOnClickListener(dataList,i);
-            viewHolder.itemView.setOnClickListener(messageListOnClickListener);
-            viewHolder.itemView.setOnLongClickListener(messageListOnClickListener);
+        MessageListOnClickListener messageListOnClickListener = new MessageListOnClickListener(dataList, i);
+        viewHolder.itemView.setOnClickListener(messageListOnClickListener);
+        viewHolder.itemView.setOnLongClickListener(messageListOnClickListener);
 //        }
     }
 

@@ -1,16 +1,23 @@
 package com.tts.starsky.apperceive.db.provider;
 
+import android.database.Cursor;
 import android.util.Log;
+
+import com.tts.starsky.apperceive.chaui.bean.Message;
 import com.tts.starsky.apperceive.db.DBBase;
 import com.tts.starsky.apperceive.db.bao.DaoSession;
 import com.tts.starsky.apperceive.db.bao.MessageBeanDao;
 import com.tts.starsky.apperceive.db.bao.UserBeanDao;
+import com.tts.starsky.apperceive.db.bao.UserInfoBeanDao;
 import com.tts.starsky.apperceive.db.bao.UserSelfBeanDao;
 import com.tts.starsky.apperceive.db.bean.MessageBean;
 import com.tts.starsky.apperceive.db.bean.MessageListBean;
 import com.tts.starsky.apperceive.db.bean.UserBean;
+import com.tts.starsky.apperceive.db.bean.UserInfoBean;
 import com.tts.starsky.apperceive.db.bean.UserSelfBean;
 import com.tts.starsky.apperceive.exception.DBException;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,40 +64,68 @@ public class MessageListDBProvider {
      * @return 消息列表list
      */
     public List<MessageListBean> queryMessageList() {
-        ArrayList<MessageListBean> messageListBeans = new ArrayList<>();
 
-        if (daoSession == null) {
-            Log.e(DBException.TAG, DBException.UNINITDAOSESSIONEXCEPTION);
-            return messageListBeans;
+//        String strSql = "group by other_user_id order by time DESC;";
+        String strSqlCount = "select MESSAGE_CONTEXT ,TIME ,OTHER_USER_ID,MESSAGE_TYPE , count(readed) as unread_number from message_bean group by other_user_id order by time DESC;";
+
+        ArrayList<MessageListBean> messageListBeanArrayList = new ArrayList<>();
+
+        Cursor cursor = daoSession.getMessageBeanDao().getDatabase().rawQuery(strSqlCount, null);
+        cursor.moveToFirst();
+        do {
+            MessageListBean messageListBean = new MessageListBean();
+            int unread_number = cursor.getColumnIndex("unread_number");
+            String cursorString = cursor.getString(unread_number);
+            messageListBean.setUnreadMessageNumber(Integer.valueOf(cursorString));
+
+            int message_type = cursor.getColumnIndex("MESSAGE_TYPE");
+            int messageTypeString = cursor.getInt(message_type);
+            messageListBean.setMessageType(messageTypeString);
+
+            int other_user_id = cursor.getColumnIndex("OTHER_USER_ID");
+            String otherUserIdString = cursor.getString(other_user_id);
+            messageListBean.setUserId(otherUserIdString);
+
+            int time = cursor.getColumnIndex("TIME");
+            String timeString = cursor.getString(time);
+            messageListBean.setTime(timeString);
+
+            int message_context = cursor.getColumnIndex("MESSAGE_CONTEXT");
+            String messageContextString = cursor.getString(message_context);
+            messageListBean.setMessageContent(messageContextString);
+
+            messageListBeanArrayList.add(messageListBean);
+        } while (cursor.moveToNext());
+
+        cursor.close();
+        UserInfoBeanDao userInfoBeanDao = daoSession.getUserInfoBeanDao();
+        for (MessageListBean messageListBean :messageListBeanArrayList) {
+            String otherUserId = messageListBean.getUserId();
+            UserInfoBean userInfoBean = userInfoBeanDao.queryBuilder().where(UserInfoBeanDao.Properties.Id.eq(otherUserId)).unique();
+            messageListBean.setHeadPhoto(userInfoBean.getPhotoUser());
+            messageListBean.setUserNickName(userInfoBean.getNickName());
         }
+        return messageListBeanArrayList;
+    }
+
+    public List<MessageBean> queryUserMessageByUserId(String userId) {
+        List<MessageBean> list = daoSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.OtherUserId.eq(userId)).list();
+        return list;
+    }
+
+    public List<MessageBean> queryUpdateMessageByUserId(String userId){
+        List<MessageBean> list = daoSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.OtherUserId.eq(userId)).where(MessageBeanDao.Properties.Readed.eq(0)).list();
+        return list;
+    }
 
 
-        UserSelfBeanDao userSelfBeanDao = daoSession.getUserSelfBeanDao();
-        UserSelfBean unique = userSelfBeanDao.queryBuilder().unique();
-        if (unique == null) {
-            return messageListBeans;
-        }
-
-        List<UserBean> userBeanQueryBuilder = daoSession.getUserBeanDao().queryBuilder().where(UserBeanDao.Properties.UnReadSign.eq(0)).list();
-        MessageBeanDao messageBeanDao = daoSession.getMessageBeanDao();
-        for ( UserBean otherUser :userBeanQueryBuilder ){
-            Long id = otherUser.getId();
-            List<MessageBean> messageBeanList = messageBeanDao.queryBuilder().where(MessageBeanDao.Properties.OtherUserId.eq(id))
-                    .orderDesc(MessageBeanDao.Properties.Time).list();
-            int unReadMessageNumber = messageBeanList.size();
-            if (unReadMessageNumber != 0) {
-                MessageBean messageBean=messageBeanList.get(0);
-                MessageListBean messageListBean = new MessageListBean(
-                        String.valueOf(otherUser.getId()),
-                        otherUser.getHeadPhoto(),
-                        otherUser.getNickname(),
-                        messageBean.getMessageContext(),
-                        messageBean.getTime(),
-                        unReadMessageNumber);
-                messageListBeans.add(messageListBean);
-            }
-
-        }
-        return messageListBeans;
+    /**
+     * 更新用户未读消息数 将其更改为已读
+     *
+     * @param userId 用户id
+     */
+    public void updateUserUnreadedMessageNum(String userId) {
+        String sqlString = "update message_bean set readed = null where other_user_id = ?; ";
+        daoSession.getDatabase().execSQL(sqlString, new String[]{userId});
     }
 }

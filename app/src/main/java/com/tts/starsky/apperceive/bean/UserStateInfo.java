@@ -24,10 +24,12 @@ public class UserStateInfo {
     private static String userIdKey = "USERID";
     private static String userNickNameKey = "USERNICKNAME";
     private static String clientSessionKey = "CLIENTSESSION";
+    private static String userClientMessageIdKey = "USERCLIENTMESSAGEID";
 
     private String userIdVlaue;
     private String userNickNameValue;
     private String clientSessionValue;
+    private String userClientMessageIdValue;
 
     private String getBase(String key, String value) {
         if (value == null) {
@@ -52,7 +54,16 @@ public class UserStateInfo {
     }
 
     public void setUserId(String userId) {
-        setBase(userIdKey,userIdVlaue,userId);
+        setBase(userIdKey, userIdVlaue, userId);
+    }
+
+
+    public String getUserClientMessageId() {
+        return getBase(userClientMessageIdKey, userClientMessageIdValue);
+    }
+
+    public void setUserClientMessageId(String messageId) {
+        setBase(userClientMessageIdKey, userClientMessageIdValue, messageId);
     }
 
 

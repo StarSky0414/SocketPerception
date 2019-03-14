@@ -31,7 +31,8 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
         public final static Property MessageContext = new Property(4, String.class, "MessageContext", false, "MESSAGE_CONTEXT");
         public final static Property Time = new Property(5, String.class, "Time", false, "TIME");
         public final static Property VoiceTime = new Property(6, String.class, "voiceTime", false, "VOICE_TIME");
-        public final static Property Readed = new Property(7, int.class, "readed", false, "READED");
+        public final static Property Readed = new Property(7, String.class, "readed", false, "READED");
+        public final static Property MessageType = new Property(8, int.class, "messageType", false, "MESSAGE_TYPE");
     }
 
 
@@ -54,7 +55,8 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
                 "\"MESSAGE_CONTEXT\" TEXT," + // 4: MessageContext
                 "\"TIME\" TEXT," + // 5: Time
                 "\"VOICE_TIME\" TEXT," + // 6: voiceTime
-                "\"READED\" INTEGER NOT NULL );"); // 7: readed
+                "\"READED\" TEXT," + // 7: readed
+                "\"MESSAGE_TYPE\" INTEGER NOT NULL );"); // 8: messageType
     }
 
     /** Drops the underlying database table. */
@@ -101,7 +103,12 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
         if (voiceTime != null) {
             stmt.bindString(7, voiceTime);
         }
-        stmt.bindLong(8, entity.getReaded());
+ 
+        String readed = entity.getReaded();
+        if (readed != null) {
+            stmt.bindString(8, readed);
+        }
+        stmt.bindLong(9, entity.getMessageType());
     }
 
     @Override
@@ -142,7 +149,12 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
         if (voiceTime != null) {
             stmt.bindString(7, voiceTime);
         }
-        stmt.bindLong(8, entity.getReaded());
+ 
+        String readed = entity.getReaded();
+        if (readed != null) {
+            stmt.bindString(8, readed);
+        }
+        stmt.bindLong(9, entity.getMessageType());
     }
 
     @Override
@@ -160,7 +172,8 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // MessageContext
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // Time
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // voiceTime
-            cursor.getInt(offset + 7) // readed
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // readed
+            cursor.getInt(offset + 8) // messageType
         );
         return entity;
     }
@@ -174,7 +187,8 @@ public class MessageBeanDao extends AbstractDao<MessageBean, Long> {
         entity.setMessageContext(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setTime(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setVoiceTime(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setReaded(cursor.getInt(offset + 7));
+        entity.setReaded(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setMessageType(cursor.getInt(offset + 8));
      }
     
     @Override

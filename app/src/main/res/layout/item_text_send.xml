@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_text_send"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:maxWidth="550dp"
      android:orientation="vertical"
     android:padding="5dp">
 
@@ -17,7 +18,7 @@
          android:visibility="gone" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="10dp"
@@ -29,31 +30,31 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:scaleType="centerInside"
-
-             android:src="@mipmap/ic_head_default_right" />
+             android:src="@mipmap/headlode" />
 
 
         <LinearLayout
             android:id="@+id/chat_item_layout_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/chat_item_header"
-            android:gravity="right|center_vertical"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/chat_item_content_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="220dp"
+                android:minHeight="40dp"
+                android:gravity="center_vertical"
                 android:background="@drawable/message_text_send"
                 android:text="你好"
+                android:padding="10dp"
                 android:textColor="#333333"
                 android:textSize="14dp" />
 
         </LinearLayout>
-
 
         <ImageView
             android:id="@+id/chat_item_fail"
@@ -75,6 +76,7 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/chat_item_layout_content"
             android:visibility="invisible" />
+
     </RelativeLayout>
 
 </LinearLayout>
