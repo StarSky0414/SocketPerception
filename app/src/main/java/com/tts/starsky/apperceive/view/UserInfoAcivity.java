@@ -21,7 +21,6 @@ public class UserInfoAcivity  extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.active_updatepassword);
 
-
         bt_update_user_info = findViewById(R.id.bt_update_user_info);
         Button viewById = (Button)findViewById(R.id.bt_update_user_info);
         bt_update_user_info.setOnClickListener(this);

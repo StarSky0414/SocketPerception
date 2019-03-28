@@ -17,21 +17,21 @@ public class UserStateInfo {
     }
 
     //声明SharedPreferences，用来读取xml;
-    private SharedPreferences sp;
+    private static SharedPreferences sp;
     //声明SharedPreferences.Editor，用来修改xml里面的值。
-    private SharedPreferences.Editor ed;
+    private static SharedPreferences.Editor ed;
 
     private static String userIdKey = "USERID";
     private static String userNickNameKey = "USERNICKNAME";
     private static String clientSessionKey = "CLIENTSESSION";
     private static String userClientMessageIdKey = "USERCLIENTMESSAGEID";
 
-    private String userIdVlaue;
-    private String userNickNameValue;
-    private String clientSessionValue;
-    private String userClientMessageIdValue;
+    private static String userIdVlaue;
+    private static String userNickNameValue;
+    private static String clientSessionValue;
+    private static String userClientMessageIdValue;
 
-    private String getBase(String key, String value) {
+    private static String getBase(String key, String value) {
         if (value == null) {
             sp = context.getSharedPreferences("setting", MODE_PRIVATE);
             value = sp.getString(key, "0");
@@ -40,42 +40,41 @@ public class UserStateInfo {
     }
 
 
-    private void setBase(String key, String value, String inputValue) {
+    private static void setBase(String key, String value, String inputValue) {
         SharedPreferences setting = context.getSharedPreferences("setting", MODE_PRIVATE);
         SharedPreferences.Editor edit = setting.edit();
         edit.putString(key, inputValue);
         edit.commit();
         value = inputValue;
-
     }
 
-    public String getUserId() {
+    public static String getUserId() {
         return getBase(userIdKey, userIdVlaue);
     }
 
-    public void setUserId(String userId) {
+    public static void setUserId(String userId) {
         setBase(userIdKey, userIdVlaue, userId);
     }
 
 
-    public String getUserClientMessageId() {
+    public static String getUserClientMessageId() {
         return getBase(userClientMessageIdKey, userClientMessageIdValue);
     }
 
-    public void setUserClientMessageId(String messageId) {
+    public static void setUserClientMessageId(String messageId) {
         setBase(userClientMessageIdKey, userClientMessageIdValue, messageId);
     }
 
 
-    public String getClientSession() {
+    public static String getClientSession() {
         if (clientSessionValue == null) {
             sp = context.getSharedPreferences("setting", MODE_PRIVATE);
-            clientSessionValue = sp.getString(clientSessionKey, "e17e7ddee0804859af9d3787345a405b");
+            clientSessionValue = sp.getString(clientSessionKey, "");
         }
         return clientSessionValue;
     }
 
-    public void setClientSession(String clientSession) {
+    public static void setClientSession(String clientSession) {
         SharedPreferences setting = context.getSharedPreferences("setting", MODE_PRIVATE);
         SharedPreferences.Editor edit = setting.edit();
         edit.putString(clientSessionKey, clientSession);

@@ -30,7 +30,9 @@ public class MyApplication extends Application {
         UserStateInfo.init(this);
         UserStateInfo userStateInfo = new UserStateInfo();
         userStateInfo.setUserId("1");
-        userStateInfo.setUserClientMessageId("0");
+//        userStateInfo.setUserId("2");
+//        userStateInfo.setUserClientMessageId("0");
+        userStateInfo.setClientSession("93f20f7369f94b8aacba92912e88ea15");
         mApplication = this;
         DBBase.dbBaseinit(this);
         init();

@@ -58,12 +58,11 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         //  初始化Dialog，设置监听
         //======================
 
-//    通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
         builder = new AlertDialog.Builder(context);
         //    设置Title的图标
         builder.setIcon(R.drawable.ic_launcher_background);
         //    设置Title的内容
-//        builder.setTitle("弹出警告框");
+        //  builder.setTitle("弹出警告框");
         //    设置Content来显示一个信息
         builder.setMessage("确定删除吗？");
         //    设置一个PositiveButton
@@ -88,7 +87,6 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
                 Toast.makeText(context, "negative: " + which, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
 
@@ -184,6 +182,9 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
                 i = (Integer) v.getTag();
                 Toast.makeText(context, "onClick    " + i + "    " + dataList.get(i).getSendUserId(), Toast.LENGTH_SHORT).show();
                 intent = new Intent(this.context, OtherUserActivity.class);
+                intent.putExtra("userId",dataList.get(i).getSendUserId());
+//                intent.putExtra("headPhoto",headPhoto);
+//                intent.putExtra("userNickName",userNickName);
                 context.startActivity(intent);
                 break;
             case R.id.bt_trend_my_dele:

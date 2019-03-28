@@ -12,12 +12,15 @@ public class SendMessageBean implements SeviceBean{
     private String MessageContext;
     // 时间
     private String voiceTime;
+    // 消息类别
+    private int messageTypeNum;
 
-    public SendMessageBean(String sendMessageId, String receiveUserId, String messageContext, String voiceTime) {
-        this.sendUserId = sendMessageId;
+    public SendMessageBean(String sendUserId, String receiveUserId, String messageContext, String voiceTime, int messageTypeNum) {
+        this.sendUserId = sendUserId;
         this.receiveUserId = receiveUserId;
         MessageContext = messageContext;
         this.voiceTime = voiceTime;
+        this.messageTypeNum = messageTypeNum;
     }
 
     public String getSendUserId() {
@@ -52,6 +55,14 @@ public class SendMessageBean implements SeviceBean{
         this.voiceTime = voiceTime;
     }
 
+    public int getMessageTypeNum() {
+        return messageTypeNum;
+    }
+
+    public void setMessageTypeNum(int messageTypeNum) {
+        this.messageTypeNum = messageTypeNum;
+    }
+
     @Override
     public String toString() {
         return "SendMessageBean{" +
@@ -59,6 +70,7 @@ public class SendMessageBean implements SeviceBean{
                 ", receiveUserId='" + receiveUserId + '\'' +
                 ", MessageContext='" + MessageContext + '\'' +
                 ", voiceTime='" + voiceTime + '\'' +
+                ", messageTypeNum=" + messageTypeNum +
                 '}';
     }
 }

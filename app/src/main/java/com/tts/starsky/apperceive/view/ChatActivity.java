@@ -49,7 +49,7 @@ public class ChatActivity extends BaseActivity {
             System.out.println("========== onServiceConnected");
             UserStateDBProvider userStateDBProvider = new UserStateDBProvider();
             String userId = userStateDBProvider.queryUserState().getUserId();
-            SendMessageBean sendMessageBean = new SendMessageBean(userId,"1",SendContent,null);
+//            SendMessageBean sendMessageBean = new SendMessageBean(userId,"1",SendContent,null);
 //            service1.adapterExceptionDispose(EvenBusEnumService.SEND_MESSAGE,sendMessageBean);
         }
 

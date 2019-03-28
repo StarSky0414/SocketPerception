@@ -20,10 +20,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
+import com.tts.starsky.apperceive.*;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.TrendsListItemBean;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.bean.evenbus.callbackbean.SycnTrendFlush;

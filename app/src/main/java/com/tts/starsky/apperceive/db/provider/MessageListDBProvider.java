@@ -71,35 +71,36 @@ public class MessageListDBProvider {
         ArrayList<MessageListBean> messageListBeanArrayList = new ArrayList<>();
 
         Cursor cursor = daoSession.getMessageBeanDao().getDatabase().rawQuery(strSqlCount, null);
-        cursor.moveToFirst();
-        do {
-            MessageListBean messageListBean = new MessageListBean();
-            int unread_number = cursor.getColumnIndex("unread_number");
-            String cursorString = cursor.getString(unread_number);
-            messageListBean.setUnreadMessageNumber(Integer.valueOf(cursorString));
+        boolean b = cursor.moveToFirst();
+        if (b) {
+            do {
+                MessageListBean messageListBean = new MessageListBean();
+                int unread_number = cursor.getColumnIndex("unread_number");
+                String cursorString = cursor.getString(unread_number);
+                messageListBean.setUnreadMessageNumber(Integer.valueOf(cursorString));
 
-            int message_type = cursor.getColumnIndex("MESSAGE_TYPE");
-            int messageTypeString = cursor.getInt(message_type);
-            messageListBean.setMessageType(messageTypeString);
+                int message_type = cursor.getColumnIndex("MESSAGE_TYPE");
+                int messageTypeString = cursor.getInt(message_type);
+                messageListBean.setMessageType(messageTypeString);
 
-            int other_user_id = cursor.getColumnIndex("OTHER_USER_ID");
-            String otherUserIdString = cursor.getString(other_user_id);
-            messageListBean.setUserId(otherUserIdString);
+                int other_user_id = cursor.getColumnIndex("OTHER_USER_ID");
+                String otherUserIdString = cursor.getString(other_user_id);
+                messageListBean.setUserId(otherUserIdString);
 
-            int time = cursor.getColumnIndex("TIME");
-            String timeString = cursor.getString(time);
-            messageListBean.setTime(timeString);
+                int time = cursor.getColumnIndex("TIME");
+                String timeString = cursor.getString(time);
+                messageListBean.setTime(timeString);
 
-            int message_context = cursor.getColumnIndex("MESSAGE_CONTEXT");
-            String messageContextString = cursor.getString(message_context);
-            messageListBean.setMessageContent(messageContextString);
+                int message_context = cursor.getColumnIndex("MESSAGE_CONTEXT");
+                String messageContextString = cursor.getString(message_context);
+                messageListBean.setMessageContent(messageContextString);
 
-            messageListBeanArrayList.add(messageListBean);
-        } while (cursor.moveToNext());
-
+                messageListBeanArrayList.add(messageListBean);
+            } while (cursor.moveToNext());
+        }
         cursor.close();
         UserInfoBeanDao userInfoBeanDao = daoSession.getUserInfoBeanDao();
-        for (MessageListBean messageListBean :messageListBeanArrayList) {
+        for (MessageListBean messageListBean : messageListBeanArrayList) {
             String otherUserId = messageListBean.getUserId();
             UserInfoBean userInfoBean = userInfoBeanDao.queryBuilder().where(UserInfoBeanDao.Properties.Id.eq(otherUserId)).unique();
             messageListBean.setHeadPhoto(userInfoBean.getPhotoUser());
@@ -108,12 +109,20 @@ public class MessageListDBProvider {
         return messageListBeanArrayList;
     }
 
-    public List<MessageBean> queryUserMessageByUserId(String userId) {
+    public List<MessageBean> queryUserMessageByUserId(String userId, int maxNum) {
         List<MessageBean> list = daoSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.OtherUserId.eq(userId)).list();
-        return list;
+        int size = list.size();
+        List<MessageBean> messageBeanList = null;
+        if (size > maxNum) {
+            messageBeanList = list.subList(size - maxNum, size);
+        } else {
+            messageBeanList = list;
+        }
+        return messageBeanList;
     }
 
-    public List<MessageBean> queryUpdateMessageByUserId(String userId){
+
+    public List<MessageBean> queryUpdateMessageByUserId(String userId) {
         List<MessageBean> list = daoSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.OtherUserId.eq(userId)).where(MessageBeanDao.Properties.Readed.eq(0)).list();
         return list;
     }

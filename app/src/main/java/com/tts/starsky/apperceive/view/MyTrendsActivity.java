@@ -148,12 +148,7 @@ public class MyTrendsActivity  extends Activity{
         public void onServiceConnected(ComponentName name, IBinder service) {
             myBinder = (MyBinder) service;
             mAdapter.setHideMy();
-
-            UserStateInfo userStateInfo = new UserStateInfo();
-            // test
-            userStateInfo.setUserId("1");
-
-            SyncTrendsBean syncTrendsBean = new SyncTrendsBean(userStateInfo.getUserId(), null);
+            SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
             System.out.println("syncTrendsBean: ============= "+syncTrendsBean.toString());
             myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
         }

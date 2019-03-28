@@ -5,6 +5,8 @@ import android.app.Application;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,13 +20,17 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.TextBadgeItem;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.bean.evenbus.callbackbean.MessageUpdateSign;
+import com.tts.starsky.apperceive.bean.service.SyncMessageRequestBean;
 import com.tts.starsky.apperceive.db.DBBase;
 import com.tts.starsky.apperceive.db.bao.DaoSession;
 import com.tts.starsky.apperceive.db.bao.MessageBeanDao;
-import com.tts.starsky.apperceive.db.bean.UserStateBean;
 import com.tts.starsky.apperceive.exception.DBException;
+import com.tts.starsky.apperceive.localserver.LocalServicTcpRequestManage;
 import com.tts.starsky.apperceive.oss.InitOssClient;
 import com.tts.starsky.apperceive.oss.OSSConfig;
+import com.tts.starsky.apperceive.service.EvenBusEnumService;
+import com.tts.starsky.apperceive.service.MyService;
+import com.tts.starsky.apperceive.view.fragment.FindFragment;
 import com.tts.starsky.apperceive.view.fragment.MyFragment;
 import com.tts.starsky.apperceive.view.fragment.MessageFragment;
 import com.tts.starsky.apperceive.view.fragment.TrendFragment;
@@ -33,6 +39,9 @@ import com.tts.starsky.apperceive.view.fragment.UnderButtonState;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by 武当山道士 on 2017/8/16.
@@ -69,13 +78,14 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         InitOssClient.initOssClient(this,OSSConfig.stsServer,OSSConfig.endPoint);
         UserStateInfo userStateInfo = new UserStateInfo();
-        userStateInfo.setUserId("1");
+//        userStateInfo.setUserId("1");
         EventBus.getDefault().register(this);
 //        DBBase.dbBaseinit(this);
 //        EventBus.getDefault().register(this);
@@ -86,7 +96,7 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
 //        DBBase.dbBaseinit(this);
 //        Intent intent = new Intent(MainActivity.this, MyService.class);
 //        bindService(intent,serviceConnection,Context.BIND_AUTO_CREATE);
-//
+
 //        DaoSession dbSession = null;
 //        try {
 //            dbSession = DBBase.getDBBase().getDBSession();
@@ -98,6 +108,13 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
 //        myService.adapter(EvenBusEnumService.SEND_MESSAGE);
 //        DBTest dbTest = new DBTest();
 //        dbTest.creat(this);
+        FragmentManager fm = this.getFragmentManager();
+        //开启事务
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.tb, FindFragment.newInstance());
+        transaction.commit();
+
+        task();
 
         /**
          * bottomNavigation 设置
@@ -174,12 +191,13 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
         FragmentTransaction transaction = fm.beginTransaction();
         switch (position) {
             case 0:
-                if (mHomeFragment == null) {
-                    mHomeFragment = HomeFragment.newInstance("首页");
-                }
-                Toast.makeText(this, "bbbbbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
-                Log.d("===================", "HomeFragment.newInstance(\"首页\")");
-                transaction.replace(R.id.tb, mHomeFragment);
+//                if (mHomeFragment == null) {
+//                    mHomeFragment = HomeFragment.newInstance("首页");
+//                }
+//                Toast.makeText(this, "bbbbbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
+//                Log.d("===================", "HomeFragment.newInstance(\"首页\")");
+//                transaction.replace(R.id.tb, mHomeFragment);
+                transaction.replace(R.id.tb, FindFragment.newInstance());
                 break;
             case 1:
                 transaction.replace(R.id.tb, MessageFragment.newInstance());
@@ -242,6 +260,24 @@ public class MainActivity extends Activity implements BottomNavigationBar.OnTabS
         long count = dbSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Readed.eq(0)).count();
         Toast.makeText(this, "有新消息"+count, Toast.LENGTH_SHORT).show();
         numberBadge.setText(String.valueOf(count));
+    }
+
+
+
+    public void task() {
+        Timer timer = new Timer();                    //创建一个定时器对象
+        TimerTask task = new TimerTask()        //创建定时器任务对象，必须实现run方法，在该方法中定义用户任务
+        {
+            @Override
+            public void run() {
+                UserStateInfo userStateInfo = new UserStateInfo();
+                SyncMessageRequestBean syncMessageRequestBean = new SyncMessageRequestBean(userStateInfo.getUserId(), userStateInfo.getUserClientMessageId());
+                System.out.println("syncTrendsBean: ============= " + syncMessageRequestBean.toString());
+                LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.SYNC_MESSAGE, syncMessageRequestBean);
+            }
+        };
+        timer.schedule(task, 0, 10000);
+        task.run();
     }
 
 

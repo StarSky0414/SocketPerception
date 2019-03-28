@@ -142,87 +142,97 @@ package com.tts.starsky.apperceive.view;//package com.tts.starsky.apperceive.vie
 //}
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.tts.starsky.apperceive.MainActivity;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
-import com.tts.starsky.apperceive.bean.evenbus.callbackbean.MessageUpdateSign;
-import com.tts.starsky.apperceive.bean.service.SyncMessageRequestBean;
 import com.tts.starsky.apperceive.bean.service.SyncTrendsBean;
-import com.tts.starsky.apperceive.db.DBBase;
-import com.tts.starsky.apperceive.db.bao.DaoSession;
-import com.tts.starsky.apperceive.db.bao.MessageBeanDao;
-import com.tts.starsky.apperceive.exception.DBException;
-import com.tts.starsky.apperceive.oss.InitOssClient;
-import com.tts.starsky.apperceive.oss.OSSConfig;
-import com.tts.starsky.apperceive.oss.UpFile;
+import com.tts.starsky.apperceive.localserver.LocalServicTcpRequestManage;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
-import com.tts.starsky.apperceive.service.MyBinder;
-import com.tts.starsky.apperceive.service.MyService;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
+import java.net.DatagramSocket;
 
 public class TestActivity extends Activity implements View.OnClickListener {
 
-
+    private int port;
+    DatagramSocket socket = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trends_item);
-
+        setContentView(R.layout.active_test_gld);
+        Button put = (Button) findViewById(R.id.put);
+        put.setOnClickListener(this);
+//        //建立udp的服务 ，并且要监听一个端口。
+//
+//
+//        Thread thread = new Thread(new Runnable() {
+//
+//
+//
+//            @Override
+//            public void run() {
+//
+//                try {
+//                    socket = new DatagramSocket(0);
+//                } catch (SocketException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                // 获取端口用于回发
+//                port = socket.getPort();
+//
+//                //准备空的数据包用于存放数据。
+//                byte[] buf = new byte[1024];
+//                DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length); // 1024
+//                //调用udp的服务接收数据
+//                try {
+//                    socket.receive(datagramPacket); //receive是一个阻塞型的方法，没有接收到数据包之前会一直等待。 数据实际上就是存储到了byte的自己数组中了。
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                System.out.println("接收端接收到的数据："+ new String(buf,0,datagramPacket.getLength())); // getLength() 获取数据包存储了几个字节。
+//                System.out.println("receive阻塞了我，哈哈");
+////                //关闭资源
+////                socket.close();
+//            }
+//        });
+//
+//        thread.start();
 //        init();
 
     }
 
 
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void Event(MessageUpdateSign sendToSever) {
-        DaoSession dbSession =null;
-        try {
-            dbSession= DBBase.getDBBase().getDBSession();
-        } catch (DBException e) {
-            e.printStackTrace();
-        }
-        long count = dbSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Readed.eq(0)).count();
-        Toast.makeText(this, "有新消息"+count, Toast.LENGTH_SHORT).show();
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void Event(MessageUpdateSign sendToSever) {
+//        DaoSession dbSession =null;
+//        try {
+//            dbSession= DBBase.getDBBase().getDBSession();
+//        } catch (DBException e) {
+//            e.printStackTrace();
+//        }
+//        long count = dbSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Readed.eq(0)).count();
+//        Toast.makeText(this, "有新消息"+count, Toast.LENGTH_SHORT).show();
+//    }
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.put:
+//                Put pu = new Put(socket);
+//                Thread thread = new Thread(pu);
+//                thread.start();
+//                System.out.println("PUT is RUN!!!!");
+                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
+                LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_FLASH,syncTrendsBean);
+//                SeviceBean seviceBean = new SeviceBean() {
+//
+//                };
+//                new ServiceBinderBase(EvenBusEnumService.TRENDS_FLASH)
+//                LocalServicTcpRequestManage.execLocalServic();
+        }
     }
 }

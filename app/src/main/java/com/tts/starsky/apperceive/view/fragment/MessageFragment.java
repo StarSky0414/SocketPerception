@@ -76,14 +76,14 @@ public class MessageFragment extends Fragment {
 
             @Override
             public void onLoadMore() {
-                mAdapter.addtData(null);
-                // 为了看效果，加了一个等待效果，正式的时候直接写mRecyclerView.loadMoreComplete();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecyclerView.loadMoreComplete();
-                    }
-                }, 2000);
+//                mAdapter.addtData(null);
+//                // 为了看效果，加了一个等待效果，正式的时候直接写mRecyclerView.loadMoreComplete();
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mRecyclerView.loadMoreComplete();
+//                    }
+//                }, 2000);
             }
         });
 
@@ -155,6 +155,7 @@ public class MessageFragment extends Fragment {
             e.printStackTrace();
         }
         long count = dbSession.getMessageBeanDao().queryBuilder().where(MessageBeanDao.Properties.Readed.eq(0)).count();
+        updateMessageList();
         Toast.makeText(getContext(), "有新消息CCCCC" + count, Toast.LENGTH_SHORT).show();
     }
 

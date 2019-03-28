@@ -28,8 +28,8 @@ public class FragmentMain extends FragmentActivity {
 
         //add the fragments you want to display in a List
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(new Find());
-        fragmentList.add(new Square());
+//        fragmentList.add(new FindFragment());
+//        fragmentList.add(new Square());
 //        fragmentList.add(new Trends());
 //        fragmentList.add(new MyFragment());
 
