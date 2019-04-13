@@ -9,6 +9,8 @@ import android.widget.EditText;
 
 import com.tts.starsky.apperceive.R;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class UserInfoAcivity  extends Activity implements View.OnClickListener {
 
     private Button bt_update_user_info;
@@ -45,5 +47,11 @@ public class UserInfoAcivity  extends Activity implements View.OnClickListener {
 //                userInfoControl.pushRequestUserInfo(name,nickName,password,HandlerSigin.serverUpdateUserInfo);
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

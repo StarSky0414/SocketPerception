@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.util.MultiTypeDelegate;
 import com.tts.starsky.apperceive.R;
+import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.chaui.activity.ChatActivity;
 import com.tts.starsky.apperceive.chaui.bean.AudioMsgBody;
 import com.tts.starsky.apperceive.chaui.bean.FileMsgBody;
@@ -23,6 +24,9 @@ import com.tts.starsky.apperceive.chaui.bean.TextMsgBody;
 import com.tts.starsky.apperceive.chaui.bean.VideoMsgBody;
 import com.tts.starsky.apperceive.chaui.util.GlideUtils;
 import com.tts.starsky.apperceive.chaui.widget.CircleImageView;
+import com.tts.starsky.apperceive.db.DBBase;
+import com.tts.starsky.apperceive.db.bao.UserInfoBeanDao;
+import com.tts.starsky.apperceive.db.bean.UserInfoBean;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,12 +65,16 @@ public class ChatAdapter extends BaseQuickAdapter<Message, BaseViewHolder> {
     private static final int RECEIVE_LOCATION = R.layout.item_location_receive;*/
 
 
-    String otherUserHeadUrl = "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/perception/userhead/head2.jpg";
-    String userSelfHeadUrl = "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/perception/userhead/head.jpg";
+    String otherUserHeadUrl;
+    String userSelfHeadUrl;
 
     public ChatAdapter(Context context, List<Message> data, String userHeadUrl) {
         super(data);
 //        this.userHeadUrl = userHeadUrl;
+
+        UserInfoBean unique = DBBase.getDBBase().getDBSession().getUserInfoBeanDao().queryBuilder().where(UserInfoBeanDao.Properties.Id.eq(UserStateInfo.getUserId())).unique();
+        userSelfHeadUrl = unique.getPhotoUser();
+        otherUserHeadUrl = userHeadUrl;
         setMultiTypeDelegate(new MultiTypeDelegate<Message>() {
             @Override
             protected int getItemType(Message entity) {
@@ -141,9 +149,9 @@ public class ChatAdapter extends BaseQuickAdapter<Message, BaseViewHolder> {
     }
 
     private void setContent(BaseViewHolder helper, Message item) {
-        if (item.getSenderId().equals(mSenderId)) {
+        if (!item.getSenderId().equals(mSenderId)) {
             setOtherUserHead(helper);
-        }else {
+        } else {
             setUserSelfHead(helper);
         }
 
@@ -189,16 +197,17 @@ public class ChatAdapter extends BaseQuickAdapter<Message, BaseViewHolder> {
     }
 
     private void setOtherUserHead(BaseViewHolder helper) {
-        GlideUtils.loadChatImage(mContext, otherUserHeadUrl, (ImageView) helper.getView(R.id.chat_item_header));
+        ImageView chat_item_header = (ImageView) helper.getView(R.id.chat_item_header);
+        GlideUtils.loadChatImage(mContext, otherUserHeadUrl, chat_item_header);
     }
 
     public void setUserSelfHead(BaseViewHolder helper) {
         GlideUtils.loadChatImage(mContext, userSelfHeadUrl, (ImageView) helper.getView(R.id.chat_item_header));
     }
 
-    public void addDate(@NonNull Collection newData){
+    public void addDate(@NonNull Collection newData) {
         mData.addAll(newData);
-        notifyItemInserted(mData.size()-2);
+        notifyItemInserted(mData.size() - 2);
     }
 
     public void insertData(List<Message> messages) {
@@ -215,7 +224,7 @@ public class ChatAdapter extends BaseQuickAdapter<Message, BaseViewHolder> {
 //        messages.add(message);
 //        messages.add(message);
         mData.addAll(messages);
-        notifyItemRangeInserted(mData.size()-messages.size(),messages.size());
+        notifyItemRangeInserted(mData.size() - messages.size(), messages.size());
 
     }
 }

@@ -1,14 +1,15 @@
 package com.tts.starsky.apperceive.controller;
 
-import android.app.Activity;
-import android.content.Context;
-
 import com.alibaba.fastjson.JSONObject;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
+import com.tts.starsky.apperceive.bean.evenbus.callbackbean.IdentityOutTime;
 import com.tts.starsky.apperceive.bean.service.SeviceBean;
 import com.tts.starsky.apperceive.bean.tometeor.AdapterRequestBean;
 import com.tts.starsky.apperceive.service.callback.IMyCallBack;
 import com.tts.starsky.apperceive.utiles.Conversion;
+
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,19 +20,20 @@ public class MessageSend implements Runnable{
     private String pathString;
     private String jsonString;
 
-//    private static String hostAddress="192.168.1.108";
-//    private static String hostAddress="120.25.96.141";
-//    private static String hostAddress="192.168.43.212";
-    private static String hostAddress="172.20.7.59";
-//    private static String hostAddress="192.168.43.212";
-//    private static String hostAddress="192.168.137.1";
+//    public static String hostAddress="120.25.96.141";
+    public static String hostAddress="172.20.7.59";
+
     private static final int port=8090;
 
     private static final String tempSession = "e17e7ddee0804859af9d3787345a405b";
     public MessageSend(String pathString, SeviceBean seviceBean, IMyCallBack iMyCallBack) {
         this.pathString=pathString;
         this.iMyCallBack=iMyCallBack;
-        jsonString = JSONObject.toJSONString(seviceBean);
+        if (seviceBean==null){
+            jsonString = "{}";
+        }else {
+            jsonString = JSONObject.toJSONString(seviceBean);
+        }
     }
 
     public void messageSend() throws IOException {
@@ -58,13 +60,11 @@ public class MessageSend implements Runnable{
         dataOutputStream.write(jsonStringBytes);
         dataOutputStream.flush();
 
-
         byte[] sessionByte = new byte[32];
         InputStream inputStream = socket.getInputStream();
         inputStream.read(sessionByte);
         String s = new String(sessionByte);
         userStateInfo.setClientSession(s);
-
 
         System.out.println("================UserStateInfo.getClientSession()："+userStateInfo.getClientSession());
         Distribute distribute = new Distribute();
@@ -75,7 +75,11 @@ public class MessageSend implements Runnable{
         dataOutputStream.close();
         outputStream.close();
         socket.close();
-        iMyCallBack.callBack(requestJsonString);
+        try {
+            iMyCallBack.callBack(requestJsonString);
+        } catch (JSONException e) {
+            EventBus.getDefault().post(new IdentityOutTime());
+        }
     }
 
     @Override

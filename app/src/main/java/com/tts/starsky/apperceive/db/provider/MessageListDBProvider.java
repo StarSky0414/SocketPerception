@@ -27,13 +27,21 @@ import java.util.Map;
 
 public class MessageListDBProvider {
 
-    private static DBBase dbBase;
-    private static DaoSession daoSession;
+    private DBBase dbBase;
+    private DaoSession daoSession;
 
     /**
      * DB初始化
      */
-    static {
+//    static {
+//
+//    }
+
+    public MessageListDBProvider(DaoSession daoSession) {
+        this.daoSession=daoSession;
+    }
+
+    public MessageListDBProvider() {
         try {
             dbBase = DBBase.getDBBase();
         } catch (DBException e) {
@@ -41,7 +49,8 @@ public class MessageListDBProvider {
         }
         daoSession = dbBase.getDBSession();
     }
-//
+
+    //
 //    /**
 //     * 插入数据库，消息同步
 //     *

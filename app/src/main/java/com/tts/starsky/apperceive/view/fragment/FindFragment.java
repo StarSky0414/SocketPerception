@@ -1,5 +1,6 @@
 package com.tts.starsky.apperceive.view.fragment;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,21 +12,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tts.starsky.apperceive.R;
+import com.tts.starsky.apperceive.bean.UserStateInfo;
+import com.tts.starsky.apperceive.bean.evenbus.callbackbean.FindUserInfo;
+import com.tts.starsky.apperceive.bean.json.request.UserInfoEntity;
+import com.tts.starsky.apperceive.bean.service.SendMessageBean;
 import com.tts.starsky.apperceive.lib.swipeadapterview.SwipeAdapterView;
+import com.tts.starsky.apperceive.localserver.LocalServicTcpRequestManage;
+import com.tts.starsky.apperceive.manager.FindFragmentManager;
+import com.tts.starsky.apperceive.service.EvenBusEnumService;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import lombok.ast.Message;
+
 public class FindFragment extends Fragment implements SwipeAdapterView.onFlingListener,
-        SwipeAdapterView.OnItemClickListener  {
+        SwipeAdapterView.OnItemClickListener {
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -34,26 +50,26 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
         return find;
     }
 
-    String [] headerIcons = {"http://www.5djiaren.com/uploads/2015-04/17-115301_29.jpg",
-            "http://img1.dzwww.com:8080/tupian_pl/20160106/32/4152697013403556460.jpg",
-            "http://c.hiphotos.baidu.com/zhidao/pic/item/72f082025aafa40f191362cfad64034f79f019ce.jpg",
-            "http://img.article.pchome.net/new/w600/00/35/15/66/pic_lib/wm/122532981493137o3iegiyx.jpg",
-            "http://img0.imgtn.bdimg.com/it/u=3382799710,1639843170&fm=21&gp=0.jpg",
-            "http://i2.sinaimg.cn/travel/2014/0918/U7398P704DT20140918143217.jpg",
-            "http://photo.l99.com/bigger/21/1415193165405_4sg3ds.jpg",
-            "http://img.pconline.com.cn/images/upload/upc/tx/photoblog/1305/15/c2/20949108_20949108_1368599174341.jpg",
-            "http://pic29.nipic.com/20130501/12558275_114724775130_2.jpg",
-            "http://photo.l99.com/bigger/20/1415193157174_j2fa5b.jpg"};
-
-    String [] names = {"星空","星空"};
-
-    String [] citys = {"北京", "上海", "广州", "深圳"};
-
-    String [] edus = {"23","23"};
-
-    String [] years = {"摄影","摄影"};
-
-    Random ran = new Random();
+//    String [] headerIcons = {"http://www.5djiaren.com/uploads/2015-04/17-115301_29.jpg",
+//            "http://img1.dzwww.com:8080/tupian_pl/20160106/32/4152697013403556460.jpg",
+//            "http://c.hiphotos.baidu.com/zhidao/pic/item/72f082025aafa40f191362cfad64034f79f019ce.jpg",
+//            "http://img.article.pchome.net/new/w600/00/35/15/66/pic_lib/wm/122532981493137o3iegiyx.jpg",
+//            "http://img0.imgtn.bdimg.com/it/u=3382799710,1639843170&fm=21&gp=0.jpg",
+//            "http://i2.sinaimg.cn/travel/2014/0918/U7398P704DT20140918143217.jpg",
+//            "http://photo.l99.com/bigger/21/1415193165405_4sg3ds.jpg",
+//            "http://img.pconline.com.cn/images/upload/upc/tx/photoblog/1305/15/c2/20949108_20949108_1368599174341.jpg",
+//            "http://pic29.nipic.com/20130501/12558275_114724775130_2.jpg",
+//            "http://photo.l99.com/bigger/20/1415193157174_j2fa5b.jpg"};
+//
+//    String [] names = {"星空","星空"};
+//
+//    String [] citys = {"北京", "上海", "广州", "深圳"};
+//
+//    String [] edus = {"23","23"};
+//
+//    String [] years = {"摄影","摄影"};
+//
+//    Random ran = new Random();
 
     private int cardWidth;
     private int cardHeight;
@@ -62,20 +78,14 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
     private InnerAdapter adapter;
 
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-////        setContentView(R.layout.activity_main);
-//
-//
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflate = inflater.inflate(R.layout.fragment_find, container, false);
-
         initView(inflate);
-        loadData();
+        LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.SYNC_FINDINFO,null);
+//        loadData();
+        changeData(null);
+        EventBus.getDefault().register(this);
         return inflate;
     }
 
@@ -119,7 +129,7 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
     @Override
     public void onAdapterAboutToEmpty(int itemsInAdapter) {
         if (itemsInAdapter == 3) {
-            loadData();
+            Toast.makeText(getActivity(), "轻点翻，要没有了", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -127,31 +137,31 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
     public void onScroll(float progress, float scrollXProgress) {
     }
 
-    private void loadData() {
-        new AsyncTask<Void, Void, List<Talent>>() {
-            @Override
-            protected List<Talent> doInBackground(Void... params) {
-                ArrayList<Talent> list = new ArrayList<>(12);
-                Talent talent;
-                for (int i = 0; i < 10; i++) {
-                    talent = new Talent();
-                    talent.headerIcon = headerIcons[i];
-                    talent.nickname = names[ran.nextInt(names.length-1)];
-                    talent.cityName = citys[ran.nextInt(citys.length-1)];
-                    talent.educationName = edus[ran.nextInt(edus.length-1)];
-                    talent.workYearName = years[ran.nextInt(years.length-1)];
-                    list.add(talent);
-                }
-                return list;
-            }
-
-            @Override
-            protected void onPostExecute(List<Talent> list) {
-                super.onPostExecute(list);
-                adapter.addAll(list);
-            }
-        }.execute();
-    }
+//    private void loadData() {
+//        new AsyncTask<Void, Void, List<Talent>>() {
+//            @Override
+//            protected List<Talent> doInBackground(Void... params) {
+//                ArrayList<Talent> list = new ArrayList<>(4);
+//                Talent talent;
+//                for (int i = 0; i < 10; i++) {
+//                    talent = new Talent();
+//                    talent.headerIcon = headerIcons[i];
+//                    talent.nickname = names[ran.nextInt(names.length-1)];
+//                    talent.cityName = citys[ran.nextInt(citys.length-1)];
+//                    talent.educationName = edus[ran.nextInt(edus.length-1)];
+//                    talent.workYearName = years[ran.nextInt(years.length-1)];
+//                    list.add(talent);
+//                }
+//                return list;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(List<Talent> list) {
+//                super.onPostExecute(list);
+//                adapter.addAll(list);
+//            }
+//        }.execute();
+//    }
 
 
     private class InnerAdapter extends BaseAdapter implements View.OnClickListener {
@@ -171,9 +181,18 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
             }
         }
 
+        public void replist(ArrayList<Talent> collection) {
+            if (isEmpty()) {
+                objs = collection;
+                notifyDataSetChanged();
+            } else {
+                objs.addAll(collection);
+            }
+        }
+
+
         public void clear() {
-            objs.clear();
-            notifyDataSetChanged();
+            objs=null;
         }
 
         public boolean isEmpty() {
@@ -195,7 +214,7 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
 
         @Override
         public Talent getItem(int position) {
-            if(objs==null ||objs.size()==0) return null;
+            if (objs == null || objs.size() == 0) return null;
             return objs.get(position);
         }
 
@@ -224,7 +243,7 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
                 holder.eduView = (TextView) convertView.findViewById(R.id.yearOld);
                 holder.workView = (TextView) convertView.findViewById(R.id.hobby);
                 holder.collectView = (CheckedTextView) convertView.findViewById(R.id.favorite);
-                holder.collectView.setTag("关注");
+                holder.collectView.setTag(position);
                 holder.collectView.setOnClickListener(this);
             } else {
                 //Log.e("tag", "recycler convertView");
@@ -256,7 +275,16 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
 
         @Override
         public void onClick(View v) {
+            int index = (int) v.getTag();
+            Talent item = adapter.getItem(index);
+            String sendUserId = item.id;
+            String messageString = "我有故事你有酒吗？";
+            SendMessageBean sendMessageBean = new SendMessageBean(UserStateInfo.getUserId(), sendUserId, messageString, null, 0);
+            LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.SEND_MESSAGE, sendMessageBean);
             Log.i("tag", "onClick: " + v.getTag());
+            Toast.makeText(getActivity(), "关注成功，快去看看吧！", Toast.LENGTH_SHORT).show();
+            v.setEnabled(false);
+            v.setBackgroundColor(Color.parseColor("#00ffffff"));
         }
     }
 
@@ -270,11 +298,54 @@ public class FindFragment extends Fragment implements SwipeAdapterView.onFlingLi
     }
 
     public static class Talent {
+        public String id;
         public String headerIcon;
         public String nickname;
         public String cityName;
         public String educationName;
         public String workYearName;
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void changeDataListen(FindUserInfo findUserInfo) {
+        changeData(findUserInfo);
+    }
+
+
+    public void changeData(FindUserInfo findUserInfo) {
+        List<UserInfoEntity> userInfoEntityList;
+        if (findUserInfo == null) {
+            userInfoEntityList = FindFragmentManager.getDataList();
+        } else {
+            userInfoEntityList = findUserInfo.getUserInfoEntityList();
+        }
+        ArrayList<Talent> list = new ArrayList<>();
+        for (UserInfoEntity userInfoEntity : userInfoEntityList) {
+            Talent talent = new Talent();
+
+            String id = userInfoEntity.getId();
+            String nickName = userInfoEntity.getNickName();
+            String photoUser = userInfoEntity.getPhotoUser();
+            int sex = userInfoEntity.getSex();
+            int constellation = userInfoEntity.getConstellation();
+
+            talent.id = id;
+            talent.headerIcon = photoUser != null ? photoUser : "";
+            talent.cityName = sex == 1 ? "男" : "女";
+            talent.nickname = nickName != null ? nickName : "一个不想透露名字的家伙";
+            talent.workYearName = "摄影，画画";
+            talent.educationName = "本溪";
+            list.add(talent);
+        }
+        adapter.replist(list);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter.clear();
+        EventBus.getDefault().unregister(this);
     }
 
 }

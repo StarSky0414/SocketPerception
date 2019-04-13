@@ -3,7 +3,7 @@ package com.tts.starsky.apperceive.exception;
 /**
  * 数据库异常
  */
-public class DBException extends Exception {
+public class DBException extends RuntimeException {
 
     public final static String TAG="数据库";
 

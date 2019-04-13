@@ -1,10 +1,12 @@
 package com.tts.starsky.apperceive.service.callback;
 
+import android.util.EventLog;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.bean.evenbus.callbackbean.MessageUpdateSign;
+import com.tts.starsky.apperceive.bean.evenbus.callbackbean.SycnMessageSucc;
 import com.tts.starsky.apperceive.bean.json.request.MessageEntity;
 import com.tts.starsky.apperceive.bean.json.request.MessageResponseBean;
 import com.tts.starsky.apperceive.bean.json.request.MessgaeTypeEnum;
@@ -17,10 +19,12 @@ import com.tts.starsky.apperceive.db.bao.UserInfoBeanDao;
 import com.tts.starsky.apperceive.db.bean.MessageBean;
 import com.tts.starsky.apperceive.db.bean.UserInfoBean;
 import com.tts.starsky.apperceive.exception.DBException;
+import com.tts.starsky.apperceive.service.EvenBusEnumService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +42,8 @@ public class SyncMessageNotice implements IMyCallBack {
      * @param requestJsonString 服务器返回的json
      */
     @Override
-    public void callBack(String requestJsonString) {
+    public void callBack(String requestJsonString)  throws JSONException {
+        EventBus.getDefault().post(new SycnMessageSucc());
         System.out.println("===================SyncMessageNotice: " + requestJsonString);
         MessageResponseBean messageResponseBean = JSONObject.parseObject(requestJsonString, MessageResponseBean.class);
         DBBase dbBase = null;
@@ -48,6 +53,9 @@ public class SyncMessageNotice implements IMyCallBack {
             e.printStackTrace();
         }
 
+        if (messageResponseBean == null){
+            return;
+        }
         List<MessageEntity> messageEntities = messageResponseBean.getMessageEntities();
         // 空数据不更新
         if (messageEntities == null || messageEntities.size() == 0) {

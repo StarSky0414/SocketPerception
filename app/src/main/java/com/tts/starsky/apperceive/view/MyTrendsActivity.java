@@ -29,6 +29,7 @@ import com.tts.starsky.apperceive.bean.evenbus.callbackbean.SycnTrendFlush;
 import com.tts.starsky.apperceive.bean.service.SendTrendsBean;
 import com.tts.starsky.apperceive.bean.service.SyncTrendsBean;
 import com.tts.starsky.apperceive.controller.adapter.TrendsListAdapter;
+import com.tts.starsky.apperceive.localserver.LocalServicTcpRequestManage;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
 import com.tts.starsky.apperceive.service.MyBinder;
 import com.tts.starsky.apperceive.service.MyService;
@@ -43,7 +44,7 @@ import java.util.List;
 /**
  * 我的动态管理展示
  */
-public class MyTrendsActivity  extends Activity{
+public class MyTrendsActivity extends Activity {
 
     private AlertDialog.Builder builder;
     // 定义
@@ -55,18 +56,17 @@ public class MyTrendsActivity  extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_trends);
-
+        findViewById(R.id.tv_top_trend_right).setVisibility(View.GONE);
 
         EventBus.getDefault().register(this);
 
         List<TrendsListItemBean> dataList = new ArrayList<>();
         mAdapter = new TrendsListAdapter(this, dataList);
 
+        SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
+        LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
+
         init();
-
-        Intent intentServer = new Intent(this, MyService.class);
-        bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
-
 
     }
 
@@ -86,7 +86,7 @@ public class MyTrendsActivity  extends Activity{
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
         // 可以设置是否开启加载更多/下拉刷新
-        mRecyclerView.setLoadingMoreEnabled(true);
+        mRecyclerView.setLoadingMoreEnabled(false);
         mRecyclerView.setPullRefreshEnabled(true);
 
         // 可以设置加载更多的样式，很多种
@@ -100,65 +100,18 @@ public class MyTrendsActivity  extends Activity{
             // 下拉刷新
             @Override
             public void onRefresh() {
-                UserStateInfo userStateInfo = new UserStateInfo();
-                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(userStateInfo.getUserId(), null);
-                myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
+                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
+                LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
+
             }
 
             @Override
             public void onLoadMore() {
-                UserStateInfo userStateInfo = new UserStateInfo();
-                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(userStateInfo.getUserId(), String.valueOf(mAdapter.getMinId()));
-                myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_LOAD, syncTrendsBean);
+//                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), String.valueOf(mAdapter.getMinId()));
+//                LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_LOAD, syncTrendsBean);
             }
         });
-
     }
-
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.tv_user_nick:
-//            case R.id.iv_user_head_photo:
-////                Toast.makeText(this, "onClick    " + i + "    " + dataList.get(i).getSendUserId(), Toast.LENGTH_SHORT).show();
-//                Toast
-//                Intent intent = new Intent(this, OtherUserActivity.class);
-//                startActivity(intent);
-//                break;
-//            case R.id.bt_trend_my_dele:
-//                //    显示出该对话框
-//                builder.show();
-////                if (dialogSign == DialogSign.S){
-////                    SendTrendsBean sendTrendsBean = new SendTrendsBean();
-////                    TrendsListItemBean trendsListItemBean = dataList.get();
-////                    sendTrendsBean.setId(trendsListItemBean.getId());
-////                    myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_DELETE,sendTrendsBean);
-////                }
-//                break;
-//        }
-//    }
-
-
-    /**
-     *   服务调用
-     */
-    private MyBinder myBinder;
-    ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (MyBinder) service;
-            mAdapter.setHideMy();
-            SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
-            System.out.println("syncTrendsBean: ============= "+syncTrendsBean.toString());
-            myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
-
 
 
     @SuppressLint("NewApi")
@@ -168,12 +121,14 @@ public class MyTrendsActivity  extends Activity{
         ArrayList<TrendsListItemBean> dataList = new ArrayList<>();
         for (SendTrendsBean sendTrendsBean : sendTrendsBeanList) {
             System.out.println("sendTrendsBeanList ========== : " + sendTrendsBean.toString());
-            TrendsListItemBean trendsListItemBean = new TrendsListItemBean(Integer.valueOf(sendTrendsBean.getTrendId()),sendTrendsBean.getSendUserId(), sendTrendsBean.getTrendContent(), "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/" + sendTrendsBean.getTrendPhotoUrl());
+            TrendsListItemBean trendsListItemBean = new TrendsListItemBean(Integer.valueOf(sendTrendsBean.getTrendId()), sendTrendsBean.getSendUserId(), sendTrendsBean.getTrendContent(), "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/" + sendTrendsBean.getTrendPhotoUrl());
+            trendsListItemBean.setUserPhoto(sendTrendsBean.getHeadPhotoUrl());
+            trendsListItemBean.setNickName(sendTrendsBean.getUserNickName());
             dataList.add(trendsListItemBean);
         }
 
         SycnTrendFlush.StatSign statSign = sycnTrendFlush.getStatSign();
-        switch (statSign){
+        switch (statSign) {
             case Load:
                 mAdapter.addtData(dataList);
                 System.out.println("Load ============");
@@ -185,25 +140,17 @@ public class MyTrendsActivity  extends Activity{
         }
         mRecyclerView.refreshComplete();
     }
+
     @SuppressLint("NewApi")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void SendTrendDeleCallBack(SendTrendsBean sendTrendsBean) {
         System.out.println("===   SendTrendDeleCallBack  ============");
-        myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_DELETE, sendTrendsBean);
+        LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_DELETE, sendTrendsBean);
     }
 
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-////        EventBus.getDefault().register(this);
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        EventBus.getDefault().unregister(this);
-//    }
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

@@ -13,6 +13,10 @@ public class TrendsListItemBean implements TempIn {
     private String photo_url;
     // 时间
     private String time;
+    // 头像网址
+    private String userPhoto;
+    // 昵称
+    private String nickName;
 
     public TrendsListItemBean(int id, String sendUserId, String content, String url) {
         this.id = id;
@@ -74,5 +78,37 @@ public class TrendsListItemBean implements TempIn {
                 ", url='" + photo_url + '\'' +
                 ", time='" + time + '\'' +
                 '}';
+    }
+
+    public String getSend_user_id() {
+        return send_user_id;
+    }
+
+    public void setSend_user_id(String send_user_id) {
+        this.send_user_id = send_user_id;
+    }
+
+    public String getPhoto_url() {
+        return photo_url;
+    }
+
+    public void setPhoto_url(String photo_url) {
+        this.photo_url = photo_url;
+    }
+
+    public String getUserPhoto() {
+        return userPhoto;
+    }
+
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 }

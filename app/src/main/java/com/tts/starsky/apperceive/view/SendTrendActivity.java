@@ -82,7 +82,7 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
 
         Intent intent = getIntent();
         String trendsBeanId = intent.getStringExtra("trendsBeanId");
-        Toast.makeText(activity, "trendsBeanId" + trendsBeanId, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(activity, "trendsBeanId" + trendsBeanId, Toast.LENGTH_SHORT).show();
         if (trendsBeanId != null && !trendsBeanId.equals("")) {
             System.out.println("=================trendsBeanId " + trendsBeanId);
             String trendsBeanContent = intent.getStringExtra("trendsBeanContent");
@@ -129,7 +129,7 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
                 UserStateInfo userStateInfo = new UserStateInfo();
                 sendTrendsBean.setSendUserId(userStateInfo.getUserId());
                 System.out.println("sendTrendsBean.toString() ===============" + sendTrendsBean.toString());
-                Toast.makeText(this, "hhh" + trendContext, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "hhh" + trendContext, Toast.LENGTH_SHORT).show();
 
                 if (sendTrendsBean.getTrendId() != null && !sendTrendsBean.getTrendId().equals("")) {
                     myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_UPDATE, sendTrendsBean);
@@ -162,8 +162,6 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
     private void showImage(final String imaePath) {
         Bitmap bm = BitmapFactory.decodeFile(imaePath);
         iv_preview_show.setImageBitmap(bm);
-
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -202,8 +200,8 @@ public class SendTrendActivity extends Activity implements View.OnClickListener 
     public void SendTrendCreateCallBack(SendTrendCreateBean sendTrendCreateBean) {
         String state = sendTrendCreateBean.getState();
         if (state.equals("1")) {
-            Toast.makeText(activity, "发布成功" + state, Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(activity, "发布成功,图片正在后台上传中！" + state, Toast.LENGTH_SHORT).show();
+            finish();
         } else {
             Toast.makeText(activity, "发布失败", Toast.LENGTH_SHORT).show();
         }

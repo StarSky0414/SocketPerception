@@ -10,7 +10,7 @@ import com.tts.starsky.apperceive.controller.MessageSend;
 import java.io.IOException;
 
 public class MyBinder extends Binder {
-    ConnectPool connectPool = new ConnectPool();
+    private ConnectPool connectPool = new ConnectPool();
 
     private void adapter(EvenBusEnumService evenBusEnumService, SeviceBean seviceBean) throws IOException, InterruptedException {
         System.out.println("================" + evenBusEnumService.toString());
@@ -32,4 +32,6 @@ public class MyBinder extends Binder {
             e.printStackTrace();
         }
     }
+
+
 }

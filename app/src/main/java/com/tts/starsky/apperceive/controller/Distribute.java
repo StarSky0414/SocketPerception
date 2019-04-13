@@ -54,7 +54,7 @@ public class Distribute {
 //        }
 //        String jsonString = new String(jsonStringBuff);
 
-        if (jsonString.length()==0){
+        if (jsonString == null || jsonString.length()==0){
             return  new AdapterRequestBean("{}");
         }
 //        String jsonString = new String(messageBodyByte);

@@ -69,7 +69,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "positive: " + i, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "positive: " + i, Toast.LENGTH_SHORT).show();
                 SendTrendsBean sendTrendsBean = new SendTrendsBean();
                 TrendsListItemBean trendsListItemBean = getDataList().get(i);
                 sendTrendsBean.setTrendId(String.valueOf(trendsListItemBean.getId()));
@@ -84,7 +84,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "negative: " + which, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "取消成功！" + which, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -143,30 +143,24 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         Glide.with(context).
                 load(dataList.get(i).getUrl()).
                 into(viewHolder.iv_content);
-
-
-        Toast.makeText(context, "v: " + i, Toast.LENGTH_SHORT).show();
-
-
+        Glide.with(context).
+                load(dataList.get(i).getUserPhoto()).
+                into(viewHolder.iv_user_head_photo);
+        viewHolder.tv_user_nick.setText(dataList.get(i).getNickName());
+//        Toast.makeText(context, "v: " + i, Toast.LENGTH_SHORT).show();
         viewHolder.tv_trend_time.setText(dataList.get(i).getTime());
-
         viewHolder.bt_trend_my_dele.setTag(i);
         viewHolder.tv_user_nick.setTag(i);
-        viewHolder.iv_user_head_photo.setTag(i);
+//        viewHolder.iv_user_head_photo.setTag(i);
         viewHolder.bt_trend_my_update.setTag(i);
 
-        switch (hideSign) {
-            case My:
-                viewHolder.iv_like.setVisibility(View.GONE);
-                viewHolder.iv_comment.setVisibility(View.GONE);
-                viewHolder.iv_collect.setVisibility(View.GONE);
-
-                break;
-            case OtherUser:
-
-                viewHolder.bt_trend_my_dele.setVisibility(View.GONE);
-                viewHolder.bt_trend_my_update.setVisibility(View.GONE);
-                break;
+        if (hideSign == null) {
+            viewHolder.iv_like.setVisibility(View.GONE);
+            viewHolder.iv_comment.setVisibility(View.GONE);
+            viewHolder.iv_collect.setVisibility(View.GONE);
+        }else {
+            viewHolder.bt_trend_my_dele.setVisibility(View.GONE);
+            viewHolder.bt_trend_my_update.setVisibility(View.GONE);
         }
 
 
@@ -178,11 +172,11 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
         switch (v.getId()) {
 
             case R.id.tv_user_nick:
-            case R.id.iv_user_head_photo:
+//            case R.id.iv_user_head_photo:
                 i = (Integer) v.getTag();
-                Toast.makeText(context, "onClick    " + i + "    " + dataList.get(i).getSendUserId(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "onClick    " + i + "    " + dataList.get(i).getSendUserId(), Toast.LENGTH_SHORT).show();
                 intent = new Intent(this.context, OtherUserActivity.class);
-                intent.putExtra("userId",dataList.get(i).getSendUserId());
+                intent.putExtra("userId", dataList.get(i).getSendUserId());
 //                intent.putExtra("headPhoto",headPhoto);
 //                intent.putExtra("userNickName",userNickName);
                 context.startActivity(intent);
@@ -200,7 +194,7 @@ public class TrendsListAdapter extends RecyclerView.Adapter<TrendsListAdapter.Vi
                 //用Bundle携带数据
                 Bundle bundle = new Bundle();
                 //传递name参数为tinyphp
-                System.out.println("================= trendsListItemBean"+ trendsListItemBean.toString());
+                System.out.println("================= trendsListItemBean" + trendsListItemBean.toString());
                 intent.putExtra("trendsBeanId", String.valueOf(trendsListItemBean.getId()));//设置参数
                 intent.putExtra("trendsBeanContent", trendsListItemBean.getContent());//设置参数
                 intent.putExtra("trendsBeanUrl", trendsListItemBean.getUrl());//设置参数

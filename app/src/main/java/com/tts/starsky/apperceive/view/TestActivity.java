@@ -43,11 +43,11 @@ package com.tts.starsky.apperceive.view;//package com.tts.starsky.apperceive.vie
 //        obtainPermission();
 //
 ////        ImageView imageView = (ImageView) findViewById(R.id.my_image_view);
-////
-////        Glide.with(this).
-////                load(R.drawable.test_photo).
-////                bitmapTransform(new CropSquareTransformation(this)).
-////                into(imageView);
+//////
+//Glide.with(this).
+//        load(R.drawable.test_photo).
+//        bitmapTransform(new CropSquareTransformation(this)).
+//        into(imageView);
 //
 //        goAlbums();
 //
@@ -143,6 +143,7 @@ package com.tts.starsky.apperceive.view;//package com.tts.starsky.apperceive.vie
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -152,7 +153,17 @@ import com.tts.starsky.apperceive.bean.service.SyncTrendsBean;
 import com.tts.starsky.apperceive.localserver.LocalServicTcpRequestManage;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class TestActivity extends Activity implements View.OnClickListener {
 
@@ -222,17 +233,18 @@ public class TestActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.put:
+//                testOkHttp3();
 //                Put pu = new Put(socket);
 //                Thread thread = new Thread(pu);
 //                thread.start();
 //                System.out.println("PUT is RUN!!!!");
-                SyncTrendsBean syncTrendsBean = new SyncTrendsBean(UserStateInfo.getUserId(), null);
-                LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_FLASH,syncTrendsBean);
-//                SeviceBean seviceBean = new SeviceBean() {
-//
-//                };
-//                new ServiceBinderBase(EvenBusEnumService.TRENDS_FLASH)
-//                LocalServicTcpRequestManage.execLocalServic();
+
+                LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.SYNC_FINDINFO,null);
+
         }
+    }
+
+    private void testOkHttp3(){
+
     }
 }

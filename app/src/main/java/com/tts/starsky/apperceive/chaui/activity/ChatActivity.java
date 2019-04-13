@@ -37,6 +37,7 @@ import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.tts.starsky.apperceive.R;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.bean.evenbus.callbackbean.MessageUpdateSign;
+import com.tts.starsky.apperceive.bean.evenbus.callbackbean.SendMessageOk;
 import com.tts.starsky.apperceive.bean.service.SendMessageBean;
 import com.tts.starsky.apperceive.bean.service.SyncTrendsBean;
 import com.tts.starsky.apperceive.chaui.adapter.ChatAdapter;
@@ -66,6 +67,8 @@ import com.tts.starsky.apperceive.db.bean.UserInfoBean;
 import com.tts.starsky.apperceive.db.bean.UserStateBean;
 import com.tts.starsky.apperceive.db.provider.MessageListDBProvider;
 import com.tts.starsky.apperceive.exception.DBException;
+import com.tts.starsky.apperceive.localserver.LocalServicTcpRequestManage;
+import com.tts.starsky.apperceive.manager.ChatActivityManager;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
 import com.tts.starsky.apperceive.service.MyBinder;
 import com.tts.starsky.apperceive.service.MyService;
@@ -120,6 +123,7 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
     public static final int REQUEST_CODE_FILE = 2222;
     private LinearLayoutManager mLinearLayout;
     private static UserStateInfo userStateInfo = new UserStateInfo();
+    private ChatActivityManager chatActivityManager;
 
 
     @Override
@@ -127,9 +131,11 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         EventBus.getDefault().register(this);
-        Intent intentServer = new Intent(this, MyService.class);
-        bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
-
+//        Intent intentServer = new Intent(this, MyService.class);
+//        bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
+//        EventBus.getDefault().register(this);
+//        LocalServicTcpRequestManage.execLocalServic();
+        chatActivityManager = new ChatActivityManager();
         initContent();
         initUserInfoUI();
         initMessageContent();
@@ -140,7 +146,8 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     protected void initContent() {
         ButterKnife.bind(this);
-        mAdapter = new ChatAdapter(this, new ArrayList<Message>(), "");
+        String userHeadUrl = getIntent().getStringExtra("userHeadUrl");
+        mAdapter = new ChatAdapter(this, new ArrayList<Message>(), userHeadUrl);
         mLinearLayout = new LinearLayoutManager(this);
         mRvChat.setLayoutManager(mLinearLayout);
         mRvChat.setAdapter(mAdapter);
@@ -187,6 +194,7 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         RelativeLayout common_toolbar_back = common_toolbar.findViewById(R.id.common_toolbar_back);
         common_toolbar_back.setOnClickListener(this);
         common_toolbar_title.setText(getIntent().getStringExtra("userNickName"));
+//        common_toolbar_title.setText();
 
         MessageListDBProvider messageListDBProvider = new MessageListDBProvider();
         List<MessageBean> messageBeanList = messageListDBProvider.queryUserMessageByUserId(getIntent().getStringExtra("userId"),20);
@@ -349,7 +357,7 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         switch (view.getId()) {
             case R.id.btn_send:
                 sendTextMsg(mEtContent.getText().toString());
-//                mEtContent.setText("");
+                mEtContent.setText("");
                 break;
             case R.id.rlPhoto:
                 PictureFileUtil.openGalleryPic(ChatActivity.this, REQUEST_CODE_IMAGE);
@@ -511,21 +519,6 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void updateMsg(final Message mMessgae) {
         mRvChat.scrollToPosition(mAdapter.getItemCount() - 1);
-        //模拟2秒后发送成功
-//        new Handler().postDelayed(new Runnable() {
-//            public void run() {
-//                int position = 0;
-//                mMessgae.setSentStatus(MsgSendStatus.SENT);
-//                //更新单个子条目
-//                for (int i = 0; i < mAdapter.getData().size(); i++) {
-//                    Message mAdapterMessage = mAdapter.getData().get(i);
-//                    if (mMessgae.getUuid().equals(mAdapterMessage.getUuid())) {
-//                        position = i;
-//                    }
-//                }
-//                mAdapter.notifyItemChanged(position);
-//            }
-//        }, 2000);
         String sendUserId = userStateInfo.getUserId();
         String targetId = getIntent().getStringExtra("userId");
         TextMsgBody localMsgType = (TextMsgBody) mMessgae.getBody();
@@ -533,8 +526,7 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
         MsgType msgType = mMessgae.getMsgType();
         int ordinal = msgType.ordinal();
         SendMessageBean sendMessageBean = new SendMessageBean(sendUserId,targetId,message,null,ordinal);
-        myBinder.adapterExceptionDispose(EvenBusEnumService.SEND_MESSAGE, sendMessageBean);
-
+        LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.SEND_MESSAGE, sendMessageBean);
 
     }
 
@@ -572,29 +564,45 @@ public class ChatActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.common_toolbar_back:
-                Toast.makeText(this, "HHHHH", Toast.LENGTH_SHORT).show();
-                mRvChat.scrollToPosition(20);
-                break;
+              finish();
         }
     }
 
-    /**
-     *   服务调用
-     */
-    private MyBinder myBinder;
-    ServiceConnection serviceConnection = new ServiceConnection() {
-        @RequiresApi(api = Build.VERSION_CODES.M)
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (MyBinder) service;
-//            mAdapter.setHideOtherUser();
-//            SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
-//            myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
-        }
+//    /**
+//     *   服务调用
+//     */
+//    private MyBinder myBinder;
+//    ServiceConnection serviceConnection = new ServiceConnection() {
+//        @RequiresApi(api = Build.VERSION_CODES.M)
+//        @Override
+//        public void onServiceConnected(ComponentName name, IBinder service) {
+//            myBinder = (MyBinder) service;
+////            mAdapter.setHideOtherUser();
+////            SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
+////            myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
+//        }
+//
+//        @Override
+//        public void onServiceDisconnected(ComponentName name) {
+//
+//        }
+//    };
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void changeSendeState(SendMessageOk sendMessageOk){
+        List<Message> data = mAdapter.getData();
+        int index = data.size() - 1;
+        Message message = data.get(index);
+        message.setSentStatus(MsgSendStatus.SENT);
+        data.remove(index);
+        data.add(message);
+        chatActivityManager.readedSignAll(UserStateInfo.getUserId());
+        mAdapter.notifyItemChanged(mAdapter.getItemCount()-1);
+    }
 
-        }
-    };
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

@@ -5,12 +5,13 @@ import com.tts.starsky.apperceive.bean.evenbus.callbackbean.SycnTrendFlush;
 import com.tts.starsky.apperceive.bean.service.SendTrendsBean;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
 
 import java.util.List;
 
 public class SyncTrendFlashNotice implements IMyCallBack{
     @Override
-    public void callBack(String requestJsonString) {
+    public void callBack(String requestJsonString)  throws JSONException {
         System.out.println("SyncTrendFlashNotice : ================ "+requestJsonString);
         List<SendTrendsBean> sendTrendsBeanList = JSONObject.parseArray(requestJsonString,SendTrendsBean.class);
 //        List<SendTrendsBean> sendTrendsBeanList = sycnTrendFlush.getSendTrendsBeanList();

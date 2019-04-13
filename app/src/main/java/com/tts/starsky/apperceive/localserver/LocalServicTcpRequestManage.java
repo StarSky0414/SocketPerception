@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import com.tts.starsky.apperceive.bean.service.SeviceBean;
+import com.tts.starsky.apperceive.manager.MessageServiceManager;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
 import com.tts.starsky.apperceive.service.MyBinder;
 
@@ -14,7 +15,7 @@ import com.tts.starsky.apperceive.service.MyBinder;
  */
 public class LocalServicTcpRequestManage implements ServiceConnection {
 
-    private static MyBinder myBinder;
+    volatile private static MyBinder myBinder;
 
     public LocalServicTcpRequestManage() {
     }
@@ -30,12 +31,21 @@ public class LocalServicTcpRequestManage implements ServiceConnection {
         pageContext.bindService(intentServer, new LocalServicTcpRequestManage(), Context.BIND_AUTO_CREATE);
     }
 
+    public static MyBinder getMyBinder() {
+        if (myBinder == null) {
+            throw new RuntimeException("服务未初始化");
+        }
+        return myBinder;
+    }
+
     /**
      * 绑定服务默认执行
      */
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         myBinder = (MyBinder) service;
+//        LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.SYNC_FINDINFO,null);
+        MessageServiceManager.messageUpdateTaskInit(5);
     }
 
     @Override
@@ -44,7 +54,7 @@ public class LocalServicTcpRequestManage implements ServiceConnection {
     }
 
     public static void execLocalServic(EvenBusEnumService evenBusEnumService, SeviceBean seviceBean) {
-        myBinder.adapterExceptionDispose(evenBusEnumService, seviceBean);
+        getMyBinder().adapterExceptionDispose(evenBusEnumService, seviceBean);
     }
 
 }

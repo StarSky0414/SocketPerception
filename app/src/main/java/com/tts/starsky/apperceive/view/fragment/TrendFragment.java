@@ -25,10 +25,12 @@ import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.tts.starsky.apperceive.bean.TrendsListItemBean;
 import com.tts.starsky.apperceive.bean.UserStateInfo;
+import com.tts.starsky.apperceive.bean.evenbus.callbackbean.MessageUpdateSign;
 import com.tts.starsky.apperceive.bean.evenbus.callbackbean.SycnTrendFlush;
 import com.tts.starsky.apperceive.bean.service.SendTrendsBean;
 import com.tts.starsky.apperceive.bean.service.SyncTrendsBean;
 import com.tts.starsky.apperceive.controller.adapter.TrendsListAdapter;
+import com.tts.starsky.apperceive.localserver.LocalServicTcpRequestManage;
 import com.tts.starsky.apperceive.service.EvenBusEnumService;
 import com.tts.starsky.apperceive.service.MyBinder;
 import com.tts.starsky.apperceive.service.MyService;
@@ -59,6 +61,9 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
+        SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
+        LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_FLASH,syncTrendsBean);
+
 
 
         mRecyclerView.setLayoutManager(layoutManager);
@@ -77,35 +82,19 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
             // 下拉刷新
             @Override
             public void onRefresh() {
-//                mAdapter.addtData(testList());
-//                mAdapter.changeData(dataList);
-
-                // 为了看效果，加了一个等待效果，正式的时候直接写mRecyclerView.refreshComplete();
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//
-//                    }
-//                }, 2000);
                 SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
-                myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
-
+                LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_FLASH,syncTrendsBean);
             }
 
             @Override
             public void onLoadMore() {
                 UserStateInfo userStateInfo = new UserStateInfo();
                 SyncTrendsBean syncTrendsBean = new SyncTrendsBean(userStateInfo.getUserId(), String.valueOf(mAdapter.getMinId()));
-                myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_LOAD, syncTrendsBean);
+//                myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_LOAD, syncTrendsBean);
+//                SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
+                LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_LOAD,syncTrendsBean);
 
-                // 为了看效果，加了一个等待效果，正式的时候直接写mRecyclerView.loadMoreComplete();
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mRecyclerView.loadMoreComplete();
-//                    }
-//                }, 2000);
+
             }
         });
 
@@ -117,10 +106,12 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
 
         EventBus.getDefault().register(this);
-        Intent intentServer = new Intent(getContext(), MyService.class);
-        getContext().bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
+//        Intent intentServer = new Intent(getContext(), MyService.class);
+//        getContext().bindService(intentServer, serviceConnection, Context.BIND_AUTO_CREATE);
+//        SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
+//        LocalServicTcpRequestManage.execLocalServic(EvenBusEnumService.TRENDS_FLASH,syncTrendsBean);
 
-
+//        myBinder = LocalServicTcpRequestManage.getMyBinder();
 
         View inflate = inflater.inflate(R.layout.fragment_trends, container, false);
         mRecyclerView = (XRecyclerView) inflate.findViewById(R.id.rl_recyclerview);
@@ -131,11 +122,9 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
         ImageView tv_top_trend_right = (ImageView) inflate.findViewById(R.id.tv_top_trend_right);
         tv_top_trend_right.setOnClickListener(this);
 
-
-
         List<TrendsListItemBean> dataList = new ArrayList<>();
         mAdapter = new TrendsListAdapter(getContext(), dataList);
-
+        mAdapter.setHideOtherUser();
         init();
         return inflate;
     }
@@ -149,30 +138,9 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     *   服务调用
-     */
-    private MyBinder myBinder;
-    ServiceConnection serviceConnection = new ServiceConnection() {
-        @RequiresApi(api = Build.VERSION_CODES.M)
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (MyBinder) service;
-            mAdapter.setHideOtherUser();
-            SyncTrendsBean syncTrendsBean = new SyncTrendsBean("",null);
-            myBinder.adapterExceptionDispose(EvenBusEnumService.TRENDS_FLASH, syncTrendsBean);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
-
-    /**
      *  数据请求回调
      * @param sycnTrendFlush 服务器返回数据
      */
-
     @SuppressLint("NewApi")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void SendTrendCreateCallBack(SycnTrendFlush sycnTrendFlush) {
@@ -181,6 +149,8 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
         for (SendTrendsBean sendTrendsBean : sendTrendsBeanList) {
             System.out.println("sendTrendsBeanList ========== : " + sendTrendsBean.toString());
             TrendsListItemBean trendsListItemBean = new TrendsListItemBean(Integer.valueOf(sendTrendsBean.getTrendId()),sendTrendsBean.getSendUserId(), sendTrendsBean.getTrendContent(), "https://thethreestooges.oss-cn-shenzhen.aliyuncs.com/" + sendTrendsBean.getTrendPhotoUrl());
+            trendsListItemBean.setUserPhoto(sendTrendsBean.getHeadPhotoUrl());
+            trendsListItemBean.setNickName(sendTrendsBean.getUserNickName());
             dataList.add(trendsListItemBean);
         }
 
@@ -206,4 +176,11 @@ public class TrendFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
 }

@@ -21,12 +21,13 @@ public class MessageListOnClickListener implements View.OnClickListener, View.On
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(v.getContext(), "点击了一下", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(v.getContext(), "点击了一下", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(v.getContext(),ChatActivity.class);
         MessageListBean messageListBean = dataList.get(i);
         String userId = messageListBean.getUserId();
         String headPhoto = messageListBean.getHeadPhoto();
         String userNickName = messageListBean.getUserNickName();
+        String userHeadUrl = messageListBean.getHeadPhoto();
         System.out.println("==============="+userId);
 
         MessageListDBProvider messageListDBProvider = new MessageListDBProvider();
@@ -35,13 +36,14 @@ public class MessageListOnClickListener implements View.OnClickListener, View.On
         intent.putExtra("userId",userId);
         intent.putExtra("headPhoto",headPhoto);
         intent.putExtra("userNickName",userNickName);
+        intent.putExtra("userHeadUrl",userHeadUrl);
         v.getContext().startActivity(intent);
 
     }
 
     @Override
     public boolean onLongClick(View v) {
-        Toast.makeText(v.getContext(), "长按了", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(v.getContext(), "长按了", Toast.LENGTH_SHORT).show();
         return true;
     }
 }

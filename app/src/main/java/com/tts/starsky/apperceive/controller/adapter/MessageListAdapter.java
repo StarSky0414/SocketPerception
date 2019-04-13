@@ -40,7 +40,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         }
     }
 
-    public void changeData(List<MessageListBean> newDataList) {
+    synchronized public void changeData(List<MessageListBean> newDataList) {
         dataList = newDataList;
         notifyDataSetChanged();
     }
@@ -71,7 +71,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
         Glide.with(context).
                 load(dataList.get(i).getHeadPhoto()).
                 into(viewHolder.iv_image);
-        viewHolder.tv_context.setText(dataList.get(i).getNewMessage());
+        viewHolder.tv_context.setText(dataList.get(i).getMessageContent());
         viewHolder.tv_fruit.setText(dataList.get(i).getUserNickName());
         if (dataList.get(i).getUnreadMessageNumber() != 0) {
             viewHolder.tv_zt.setText(String.valueOf(dataList.get(i).getUnreadMessageNumber()));

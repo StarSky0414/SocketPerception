@@ -3,7 +3,7 @@ package com.tts.starsky.apperceive.chaui.emoji;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.tts.starsky.apperceive.chaui.MyApplication;
+import com.tts.starsky.apperceive.SplashScreenApplication;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -78,7 +78,7 @@ public class EmojiDao {
         if (!file.exists()) {
             try {
                 file.createNewFile();
-                inputStream = MyApplication.mApplication.getClass().getClassLoader().getResourceAsStream("assets/" + SqliteFileName);
+                inputStream = SplashScreenApplication.class.getClassLoader().getResourceAsStream("assets/" + SqliteFileName);
                 outputStream = new FileOutputStream(file);
                 byte[] buffer = new byte[1024];
                 int len ;

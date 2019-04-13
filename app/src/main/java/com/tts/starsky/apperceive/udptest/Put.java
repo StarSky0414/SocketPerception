@@ -1,5 +1,7 @@
 package com.tts.starsky.apperceive.udptest;
 
+import com.tts.starsky.apperceive.controller.MessageSend;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -30,7 +32,8 @@ public class Put implements Runnable {
         //创建了一个数据包
         DatagramPacket packet = null;
         try {
-            InetAddress byName = InetAddress.getByName("172.20.7.59");
+//            InetAddress byName = InetAddress.getByName("120.25.96.141");
+            InetAddress byName = InetAddress.getByName(MessageSend.hostAddress);
             System.out.println("==================byNmae"+byName.getAddress());
             packet = new DatagramPacket(data.getBytes(), data.getBytes().length,byName , 9090);
         } catch (UnknownHostException e) {

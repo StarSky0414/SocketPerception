@@ -21,6 +21,8 @@ import com.tts.starsky.apperceive.db.provider.MySelfDBProvider;
 import com.tts.starsky.apperceive.db.provider.UserStateDBProvider;
 import com.tts.starsky.apperceive.exception.DBException;
 
+import org.json.JSONException;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,7 @@ import java.util.List;
 public class newMessageNotice implements IMyCallBack {
 
     @Override
-    public void callBack(String requestJsonString) {
+    public void callBack(String requestJsonString) throws JSONException {
         System.out.println("=============="+requestJsonString);
         List<UserChatMessage> messageBeanList = JSON.parseArray(requestJsonString, UserChatMessage.class);
         for (UserChatMessage messageBean : messageBeanList){

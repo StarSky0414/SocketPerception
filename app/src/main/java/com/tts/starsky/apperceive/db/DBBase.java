@@ -2,6 +2,7 @@ package com.tts.starsky.apperceive.db;
 
 import android.content.Context;
 
+import com.tts.starsky.apperceive.bean.UserStateInfo;
 import com.tts.starsky.apperceive.db.bao.DaoMaster;
 import com.tts.starsky.apperceive.db.bao.DaoSession;
 import com.tts.starsky.apperceive.exception.DBException;
@@ -13,7 +14,7 @@ public class DBBase {
 
     private static Context context;
     //数据库名
-    private static final String DBNAME="my.db";
+    private String DBNAME="my"+UserStateInfo.getUserId() +".db";
     //DBBase对象
     private static DBBase dbBase;
 

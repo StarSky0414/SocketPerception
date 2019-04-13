@@ -4,6 +4,7 @@ import com.tts.starsky.apperceive.service.callback.IMyCallBack;
 import com.tts.starsky.apperceive.service.callback.OtherUserInfo;
 import com.tts.starsky.apperceive.service.callback.SendDeleTrendNotice;
 import com.tts.starsky.apperceive.service.callback.SendMessageNotice;
+import com.tts.starsky.apperceive.service.callback.SyncFindInfo;
 import com.tts.starsky.apperceive.service.callback.SyncMessageNotice;
 import com.tts.starsky.apperceive.service.callback.SendTrendMessageNotice;
 import com.tts.starsky.apperceive.service.callback.SyncTrendFlashNotice;
@@ -12,15 +13,13 @@ import com.tts.starsky.apperceive.service.callback.SyncTrendLoadNotice;
 public enum EvenBusEnumService {
     SYNC_MESSAGE("syncMessage:getMessage", SyncMessageNotice.class),
     SEND_MESSAGE("sendMessage:setMessage", SendMessageNotice.class),
-    //    SYNC_MESSAGE("requestNewMessageList",newMessageNotice.class);
     TRENDS_CREATE("trendsSend:createTrend", SendTrendMessageNotice.class),
     TRENDS_FLASH("trendsSync:getAllTrends", SyncTrendFlashNotice.class),
     TRENDS_LOAD("trendsSync:getload", SyncTrendLoadNotice.class),
     TRENDS_DELETE("trendsSend:deleteTrend", SendDeleTrendNotice.class),
     TRENDS_UPDATE("trendsSend:updateTrend", SendDeleTrendNotice.class),
-    OTHER_USERINFO("userInfo:otherUserInfo",OtherUserInfo.class);
-//    TRENDS_MY_FLASH("trendsSync:getMyTrendsFlash", SyncTrendFlashNotice.class),
-//    TRENDS_MY_LOAD("trendsSync:getMyTrendsLoad", SyncTrendLoadNotice.class);
+    OTHER_USERINFO("userInfo:otherUserInfo",OtherUserInfo.class),
+    SYNC_FINDINFO("syncFindInfo:findInfo",SyncFindInfo.class);
 
     private String severPathString;
     private IMyCallBack iMyCallBack;

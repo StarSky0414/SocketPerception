@@ -11,6 +11,7 @@ import static android.content.Context.MODE_WORLD_READABLE;
 public class UserStateInfo {
 
     private static Context context;
+    private static int unReadMassageNum = 0;
 
     public static void init(Context context) {
         UserStateInfo.context = context;
@@ -26,52 +27,54 @@ public class UserStateInfo {
     private static String clientSessionKey = "CLIENTSESSION";
     private static String userClientMessageIdKey = "USERCLIENTMESSAGEID";
 
-    private static String userIdVlaue;
-    private static String userNickNameValue;
-    private static String clientSessionValue;
-    private static String userClientMessageIdValue;
+//    private static String userIdVlaue;
+//    private static String userNickNameValue;
+//    private static String clientSessionValue;
+//    private static String userClientMessageIdValue;
 
-    private static String getBase(String key, String value) {
-        if (value == null) {
-            sp = context.getSharedPreferences("setting", MODE_PRIVATE);
-            value = sp.getString(key, "0");
-        }
-        return value;
+    public static int getUnReadMassageNum() {
+        return unReadMassageNum;
+    }
+
+    public static void setUnReadMassageNum(int unReadMassageNum) {
+        UserStateInfo.unReadMassageNum = unReadMassageNum;
+    }
+
+    private static String getBase(String key) {
+        sp = context.getSharedPreferences("setting", MODE_PRIVATE);
+        return sp.getString(key,"0");
     }
 
 
-    private static void setBase(String key, String value, String inputValue) {
+    private static void setBase(String key, String inputValue) {
         SharedPreferences setting = context.getSharedPreferences("setting", MODE_PRIVATE);
         SharedPreferences.Editor edit = setting.edit();
         edit.putString(key, inputValue);
         edit.commit();
-        value = inputValue;
     }
 
     public static String getUserId() {
-        return getBase(userIdKey, userIdVlaue);
+        return getBase(userIdKey);
     }
 
     public static void setUserId(String userId) {
-        setBase(userIdKey, userIdVlaue, userId);
+        setBase(userIdKey, userId);
     }
 
 
     public static String getUserClientMessageId() {
-        return getBase(userClientMessageIdKey, userClientMessageIdValue);
+        return getBase(userClientMessageIdKey);
     }
 
     public static void setUserClientMessageId(String messageId) {
-        setBase(userClientMessageIdKey, userClientMessageIdValue, messageId);
+        setBase(userClientMessageIdKey, messageId);
     }
 
 
     public static String getClientSession() {
-        if (clientSessionValue == null) {
-            sp = context.getSharedPreferences("setting", MODE_PRIVATE);
-            clientSessionValue = sp.getString(clientSessionKey, "");
-        }
-        return clientSessionValue;
+        sp = context.getSharedPreferences("setting", MODE_PRIVATE);
+        return sp.getString(clientSessionKey, "");
+
     }
 
     public static void setClientSession(String clientSession) {
@@ -79,6 +82,9 @@ public class UserStateInfo {
         SharedPreferences.Editor edit = setting.edit();
         edit.putString(clientSessionKey, clientSession);
         edit.commit();
-        clientSessionValue = clientSession;
     }
+
+//    public static  void  clearAll(){
+//
+//    }
 }
